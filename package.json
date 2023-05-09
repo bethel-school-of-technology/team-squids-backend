@@ -1,0 +1,29 @@
+{
+  "name": "team-squids-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bethel-school-of-technology/team-squids-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bethel-school-of-technology/team-squids-backend/issues"
+  },
+  "homepage": "https://github.com/bethel-school-of-technology/team-squids-backend#readme",
+  "devDependencies": {
+    "@types/mysql": "^2.15.21",
+    "@types/node": "^20.1.1"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.3.0"
+  }
+}
