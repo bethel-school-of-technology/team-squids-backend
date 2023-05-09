@@ -1,0 +1,160 @@
+__________SETUP FOR EXPRESS.JS__________
+
+npm install typescript @types/node --save-dev
+	installs typescript
+
+tsc --init --rootDir src --outDir build --esModuleInterop --resolveJsonModule --lib es6 --module commonjs --allowJs true --noImplicitAny true
+	creates tsconfig.js
+
+npm install --save express
+	installs express.js
+
+import express from 'express'
+	put this in the app.ts file
+	(make sure @types/express is installed)
+
+npm run build
+	builds the server before we can use it
+
+__________MORGAN__________
+logging database status in the console
+
+npm install morgan --save
+npm i --save-dev @types/morgan
+
+import morgan from 'morgan'
+	Add this to app.ts
+
+__________Handle bars__________
+
+npm install --save hbs
+	installs handlebars
+
+__________mySQL__________
+For when you are constucting the queries manually in ts
+
+npm install --save mysql
+npm install --save-dev @types/mysql
+
+_________SEQUELIZE__________
+translates JS to mySQL queries
+
+npm install mysql2 --save
+"target": "es2021", 
+	Add this to tsconfig.json, mySQL2 is a dependency for seqelize
+
+npm install sequelize --save
+
+npm install mysql2 sequelize --save
+
+"target": "es2021", 
+	Add this to tsconfig.json
+
+__________SEQUELIZE USAGE__________
+Use the MVC model for a backend. In the models folder, for each table you have, add a file that will create a class that extend Model.
+Then create a function and in the function initialize the class and delcare each attribute about the table.
+
+example:
+
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>>{
+    declare userId: number;
+    declare username: string;
+    declare password: string;
+}
+
+export function UserFactory(sequelize: Sequelize) {
+    User.init({
+        userId: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+            allowNull: false
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    }, {
+        tableName: 'users',
+        freezeTableName: true,
+        sequelize
+    });
+}
+
+Then the index file in the should look like this.
+
+import { Sequelize } from "sequelize";
+import { CoffeeFactory } from "./coffee";
+import { UserFactory } from "./user";
+
+const dbName = 'shopdb';
+const username = 'root';
+const password = '0624';
+
+const sequelize = new Sequelize(dbName, username, password, {
+    host: 'localhost',
+    port: 3306,
+    dialect: 'mysql'
+});
+
+//importing the table contructor
+UserFactory(sequelize);
+
+export const db = sequelize;
+
+
+_________PASSPORT__________
+Authentication and authorization
+
+npm install --save passport
+npm install --save-dev @types/passport
+
+npm install --save passport-local
+npm install --save-dev @types/passport-local
+	Extension of passport
+
+npm install --save express-session
+npm install --save-dev @types/express-session
+	express-session will help with sessions.
+
+import passport from 'passport';
+import session from 'express-session';
+	imports for app.ts
+
+__________BCRYPT__________
+
+npm install --save bcrypt
+npm install --save-dev @types/bcrypt
+
+__________JSON WEB TOEKN__________
+
+npm install --save jsonwebtoken
+npm install --save-dev @types/jsonwebtoken
+
+__________Mongoose__________
+
+npm install --save mongoose
+npm install --save-dev @types/mongoose
+
+__________CORS___________
+
+Allows for resource sharing
+npm install cors
+
+__________Mocha-Chai-Supertest__________
+npm install mocha @types/mocha --save-dev
+npm install ts-node
+	installs testing library
+
+npm install chai @types/chai --save-dev
+	intalls keywords for testing library
+import { expect } from 'chai';
+	imports keywords
+
+npm install supertest @types/supertest --save-dev
+	install testing library that mocks server requests
