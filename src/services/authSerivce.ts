@@ -25,7 +25,7 @@ export const verifyUser = async (req: Request) => {
       // Verify the token and get the user
       try {
           let decoded: any = await jwt.verify(token, secret);
-          return Church.findByPk(decoded.userId);
+          return Church.findByPk(decoded.churchId);
       }
       catch (err) {
           return null;
