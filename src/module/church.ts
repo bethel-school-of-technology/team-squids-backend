@@ -9,7 +9,7 @@ export class Church extends Model<InferAttributes<Church>, InferCreationAttribut
     declare phoneNumber: number;
     declare statementOfFaith: string;
     declare welcomeMessage: string;
-    declare serviceTime: number;
+    declare serviceTime: string;
     declare imageUrl: string;
     declare website: string;
     declare createdAt?: Date;
