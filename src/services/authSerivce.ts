@@ -5,7 +5,7 @@ import { Church } from '../models/church';
 
 const secret = 'Tea, Earl Grey, Hot';
 
-export const signChurchToken = async (church: Church) => {
+export const signUserToken = async (church: Church) => {
   let token = jwt.sign(
       { churchId: church.churchId },
       secret,
