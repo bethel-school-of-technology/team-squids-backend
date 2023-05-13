@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
-import { Church } from '../module/church';
+import { Church } from '../modules/church';
 
 
 const secret = 'Tea, Earl Grey, Hot';
