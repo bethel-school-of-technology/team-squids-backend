@@ -41,7 +41,7 @@ export function ChurchFactory(sequelize: Sequelize) {
           allowNull: false
       },
       phoneNumber: {
-          type: DataTypes.NUMBER,
+          type: DataTypes.INTEGER,
           allowNull: false
       },
       welcomeMessage:{
