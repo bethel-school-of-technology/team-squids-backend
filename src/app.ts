@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { db } from './module';
 import morgan from 'morgan';
-
+import { db } from './models';
 
 const app = express();
 

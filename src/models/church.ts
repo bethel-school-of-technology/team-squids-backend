@@ -7,7 +7,6 @@ export class Church extends Model<InferAttributes<Church>, InferCreationAttribut
     declare email: string;
     declare address: string;
     declare phoneNumber: number;
-    declare statementOfFaith: string;
     declare welcomeMessage: string;
     declare serviceTime: string;
     declare imageUrl: string;
@@ -42,12 +41,8 @@ export function ChurchFactory(sequelize: Sequelize) {
           allowNull: false
       },
       phoneNumber: {
-          type: DataTypes.NUMBER,
+          type: DataTypes.INTEGER,
           allowNull: false
-      },
-      statementOfFaith:{
-        type: DataTypes.STRING,
-        allowNull: false 
       },
       welcomeMessage:{
         type: DataTypes.STRING,
