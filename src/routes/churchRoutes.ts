@@ -2,8 +2,19 @@ import { Router } from 'express';
 
 const router = Router();
 
-//Put church route stuff here
-// router.get(church route stuff)
+router.get('/');
+
+router.post('/');
+
+router.post('/signin');
+
+router.post('/signout');
+
+router.get('/:id');
+
+router.put('/:id');
+
+router.delete('/:id');
 
 
 export default router;
