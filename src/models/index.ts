@@ -7,6 +7,7 @@ const username = 'root';
 // const password = 'Password1!';
 const password = '0624';
 
+
 const sequelize = new Sequelize(dbName, username, password, {
     host: '127.0.0.1',
     port: 3306,
