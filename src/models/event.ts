@@ -8,7 +8,10 @@ export class Event extends Model<InferAttributes<Event>, InferCreationAttributes
     declare eventTitle: string;
     declare eventDate: Date;
     declare eventTime: string;
-    declare eventAddress: string;
+    declare eventStreet: string;
+    declare eventCity: string;
+    declare eventState: string;
+    declare eventZip:string;
     declare eventType: "Family" | "Youth" | "Young Adults" | "Single" | "Senior";
     declare description: string;
     declare createdAt?: Date;
@@ -45,7 +48,22 @@ export function EventFactory(sequelize: Sequelize){
             allowNull: false
         },
 
-        eventAddress: {
+        eventStreet: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+
+        eventCity: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        
+        eventState: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+
+        eventZip: {
             type: DataTypes.STRING,
             allowNull: false
         },
