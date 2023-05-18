@@ -3,10 +3,8 @@ import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize }
 export class Church extends Model<InferAttributes<Church>, InferCreationAttributes<Church>>{
     declare churchId: number;
     declare churchName: string;
-    declare password: string;
-    declare email: string;
     declare address: string;
-    declare phoneNumber: number;
+    declare phoneNumber: string;
     declare welcomeMessage: string;
     declare serviceTime: string;
     declare imageUrl: string;
@@ -27,21 +25,13 @@ export function ChurchFactory(sequelize: Sequelize) {
           allowNull: false,
           unique: true
       },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-      },
+      
       address: {
           type: DataTypes.STRING,
           allowNull: false
       },
       phoneNumber: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.STRING,
           allowNull: false
       },
       welcomeMessage:{
@@ -53,7 +43,7 @@ export function ChurchFactory(sequelize: Sequelize) {
         allowNull: false
       },
       imageUrl: {
-        type: DataTypes.BLOB,
+        type: DataTypes.STRING,
         allowNull: false
       },
       website: {
