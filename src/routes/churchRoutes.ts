@@ -7,10 +7,6 @@ router.get('/',getChurch);
 
 router.post('/',createChurch);
 
-// router.post('/signin');
-
-// router.post('/signout');
-
 router.get('/:id', getOneChurch);
 
 router.put('/:id',editChurch);

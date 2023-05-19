@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import { db } from './models';
 import churchRoutes from './routes/churchRoutes';
+import churchUserRoutes from './routes/churchUserRoutes'
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(cors());
 
 // Routing Middleware
 app.use('/api/church',churchRoutes);
+app.use('/api/user', churchUserRoutes);
+
 
 app.use(( req: Request, res: Response, next: NextFunction ) => {
   res.status(404).send("This is not the URL you are looking for!");
