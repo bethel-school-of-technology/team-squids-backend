@@ -1,14 +1,14 @@
 import { Sequelize } from "sequelize";
 
-import { ChurchFactory } from "./church";
-import { AssociateChurchEvent, EventFactory } from "./event";
-import { AssociateUserChurch } from "./churchUser";
+import { ChurchUserFactory} from "./churchUser";
+import { ChurchFactory, AssociateUserChurch  } from "./church";
+// import { AssociateChurchEvent, EventFactory } from "./event";
 
 const dbName = 'ChurchDB';
 const username = 'root';
-// const password = 'Password1!';
-const password = '0624';
+const password = 'Password1!';
 
+// const password = '0624';
 
 const sequelize = new Sequelize(dbName, username, password, {
     host: '127.0.0.1',
@@ -18,8 +18,8 @@ const sequelize = new Sequelize(dbName, username, password, {
 
 ChurchFactory(sequelize);
 EventFactory(sequelize);
+ChurchUserFactory(sequelize);
+AssociateUserChurch();
 AssociateChurchEvent();
-// AssociateUserChurch()
-
 
 export const db = sequelize;

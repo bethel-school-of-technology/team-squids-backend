@@ -1,7 +1,10 @@
 import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize } from "sequelize";
+import { ChurchUser } from "./churchUser";
 
 export class Church extends Model<InferAttributes<Church>, InferCreationAttributes<Church>>{
+    
     declare churchId: number;
+    declare userId : number;
     declare churchName: string;
     declare street: string;
     declare city: string;
@@ -23,6 +26,10 @@ export function ChurchFactory(sequelize: Sequelize) {
           primaryKey: true,
           allowNull: false
       },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
       churchName: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -81,4 +88,9 @@ export function ChurchFactory(sequelize: Sequelize) {
       freezeTableName: true,
       sequelize
   });
+}
+
+export function AssociateUserChurch(){
+  ChurchUser.hasMany(Church, { foreignKey: 'userId' });
+  Church.belongsTo(ChurchUser, { foreignKey: 'userId' });
 }

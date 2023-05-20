@@ -1,10 +1,9 @@
 import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize } from "sequelize";
-import { Church } from "./church";
 
 
 export class ChurchUser extends Model<InferAttributes<ChurchUser>, InferCreationAttributes<ChurchUser>>{
     declare userId: number;
-    declare churchId: number;
+
     declare email: string;
     declare password: string;
     
@@ -18,10 +17,7 @@ export function ChurchUserFactory( sequelize: Sequelize ) {
             primaryKey: true,
             allowNull: false
         },
-        churchId:{
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
+
         
         email: {
             type: DataTypes.STRING,
@@ -42,8 +38,3 @@ export function ChurchUserFactory( sequelize: Sequelize ) {
 }
 
 
-
-export function AssociateUserChurch(){
-    ChurchUser.hasMany(Church, { foreignKey: 'userId' });
-    Church.belongsTo(ChurchUser, { foreignKey: 'userId' });
-}

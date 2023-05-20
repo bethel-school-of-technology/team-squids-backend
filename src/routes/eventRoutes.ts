@@ -10,4 +10,4 @@ router.post("/", createEvent)
 router.put('/editevent', updateEvent)
 router.delete("/:eventId", deleteEvent)
 
-export default router;
+// export default router;
