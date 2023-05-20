@@ -16,7 +16,7 @@ router.post('/signin', signInUser);
 
 router.post('/signout', signOutUser);
 
-router.delete('/delete-account', deleteUser);
+router.delete('/delete-account/:id', deleteUser);
 
 
 export default router; 
