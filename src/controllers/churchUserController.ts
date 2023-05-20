@@ -72,7 +72,7 @@ export const getUser: RequestHandler = async ( req, res, next ) => {
     // } else {
     //     res.status(401).send();
     // }
-    let churchUser = req.params.userId;
+    let churchUser = req.params.id;
     let user = await ChurchUser.findByPk(churchUser);
     res.status(200).json(user);
   }
@@ -80,7 +80,7 @@ export const getUser: RequestHandler = async ( req, res, next ) => {
 
 
 export const modifyUser: RequestHandler = async ( req, res, next ) => {
-    let churchUser = req.params.userId;
+    let churchUser = req.params.id;
     let newUser: ChurchUser =  req.body;
     let findUser = await ChurchUser.findByPk(churchUser);
     if (findUser && findUser.userId === newUser.userId && newUser.email && newUser.password ){
