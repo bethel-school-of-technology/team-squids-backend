@@ -1,4 +1,5 @@
 import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize } from "sequelize";
+import { ChurchUser } from "./churchUser";
 
 export class Church extends Model<InferAttributes<Church>, InferCreationAttributes<Church>>{
     declare churchId: number;
@@ -81,4 +82,9 @@ export function ChurchFactory(sequelize: Sequelize) {
       freezeTableName: true,
       sequelize
   });
+}
+
+export function AssociateUserChurch(){
+  ChurchUser.hasMany(Church, { foreignKey: 'userId' });
+  Church.belongsTo(ChurchUser, { foreignKey: 'userId' });
 }
