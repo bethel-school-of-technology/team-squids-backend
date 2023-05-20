@@ -3,7 +3,10 @@ import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize }
 export class Church extends Model<InferAttributes<Church>, InferCreationAttributes<Church>>{
     declare churchId: number;
     declare churchName: string;
-    declare address: string;
+    declare street: string;
+    declare city: string;
+    declare state: string;
+    declare zip: string;
     declare phoneNumber: string;
     declare welcomeMessage: string;
     declare serviceTime: string;
@@ -26,9 +29,21 @@ export function ChurchFactory(sequelize: Sequelize) {
           unique: true
       },
       
-      address: {
+      street: {
           type: DataTypes.STRING,
           allowNull: false
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      state: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      zip: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       phoneNumber: {
           type: DataTypes.STRING,
