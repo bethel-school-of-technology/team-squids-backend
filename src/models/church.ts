@@ -89,6 +89,7 @@ export function ChurchFactory(sequelize: Sequelize) {
       sequelize
   });
 }
+
 export function AssociateUserChurch(){
   ChurchUser.hasMany(Church, { foreignKey: 'userId' });
   Church.belongsTo(ChurchUser, { foreignKey: 'userId' });

@@ -12,22 +12,33 @@ export const allUser: RequestHandler = async ( req, res, next ) => {
 
 export const createUser: RequestHandler = async ( req, res, next ) => {
     let newUser: ChurchUser = req.body;
-    
-    if (newUser.email && newUser.password) {
-        // hassPass will go here 
-        try {
-            let create = await ChurchUser.create(newUser);
-            res.status(200).json({
-                email: create.email,
-                userId: create.userId
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Internal Server Error.')
-        }
-    } else {
-        res.status(400).send('Email and password required.')
+    if (
+        
+      newUser.email,
+      newUser.password
+
+      ) {
+        let create = await ChurchUser.create(newUser);
+        
+        res.status(201).json(create);
     }
+    else {
+        res.status(400).send();
+    } 
+    
+    // if (newUser.email && newUser.password) {
+    //     // hassPass will go here 
+        
+    //         let create = await ChurchUser.create(newUser);
+    //         res.status(200).json({
+    //             email: create.email,
+    //             passward: create.password,
+    //             userId: create.userId
+    //         });
+         
+    // } else {
+    //     res.status(400).send('Email and password required.')
+    // }
 }
 
 
