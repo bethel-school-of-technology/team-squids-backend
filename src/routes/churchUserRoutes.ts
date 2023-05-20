@@ -1,19 +1,22 @@
 import { Router } from 'express';
-
+import { allUser, createUser, getUser,
+ signInUser, signOutUser, modifyUser,deleteUser } from '../controllers/churchUserController';
 
 const router = Router();
 
-router.get('/:id');
+router.get('/', allUser);
 
-router.post('/create-account');
+router.get('/:id', getUser);
 
-router.put('/edit-account/:id');
+router.post('/create-account', createUser);
 
-router.post('/signin');
+router.put('/edit-account/:id', modifyUser);
 
-router.post('/signout');
+router.post('/signin', signInUser);
 
-router.delete('/delete-account');
+router.post('/signout', signOutUser);
+
+router.delete('/delete-account', deleteUser);
 
 
 export default router; 
