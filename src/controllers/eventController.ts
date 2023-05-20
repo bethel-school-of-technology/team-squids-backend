@@ -55,7 +55,7 @@ export const createEvent: RequestHandler = async (req, res, next) => {
     if (verified) {
         //If thie user is verified and if the event has every required parameter, it will create a new event
         let newEvent: Event = req.body;
-        if (newEvent.eventTitle && newEvent.churchId && newEvent.eventDate && newEvent.eventAddress && newEvent.eventType && newEvent.description) {
+        if (newEvent.eventTitle && newEvent.churchId && newEvent.eventDate && newEvent.eventTime && newEvent.eventType && newEvent.description && newEvent.eventCity && newEvent.eventStreet && newEvent.eventState && newEvent.eventZip) {
             let created = await Event.create(newEvent);
             res.status(201).json(created);
         } else {
@@ -79,8 +79,8 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
 
     //If the event that was requested has all of these attributes, edit the event
     if (matchingEvent && matchingEvent.eventId ==
-        eventIdNum && editedEvent.eventTitle && editedEvent.churchId && editedEvent.eventAddress && editedEvent.description && editedEvent.eventDate && editedEvent.eventTime
-        && editedEvent.eventType) {
+        eventIdNum && editedEvent.eventTitle && editedEvent.churchId && editedEvent.eventStreet && editedEvent.description && editedEvent.eventDate && editedEvent.eventTime
+        && editedEvent.eventType && editedEvent.eventCity && editedEvent.eventState && editedEvent.eventZip) {
         await Event.update(editedEvent, { where: {eventId: eventId} })
         res.status(200).json();
     } else {
