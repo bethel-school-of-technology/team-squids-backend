@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import { db } from './models';
 import churchRoutes from './routes/churchRoutes';
 import churchUserRoutes from './routes/churchUserRoutes'
+import eventRoutes from './routes/eventRoutes'
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors());
 // Routing Middleware
 app.use('/api/church',churchRoutes);
 app.use('/api/user', churchUserRoutes);
+app.use('/api/event', eventRoutes)
 
 
 app.use(( req: Request, res: Response, next: NextFunction ) => {
