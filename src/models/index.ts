@@ -1,11 +1,11 @@
 import { Sequelize } from "sequelize";
-
+import { ChurchUserFactory, AssociateUserChurch } from "./churchUser";
 import { ChurchFactory } from "./church";
 import { AssociateChurchEvent, EventFactory } from "./event";
 
 const dbName = 'ChurchDB';
 const username = 'root';
-const password = 'Password1!';
+const password = 'password1!';
 // const password = '0624';
 
 
@@ -17,6 +17,8 @@ const sequelize = new Sequelize(dbName, username, password, {
 
 ChurchFactory(sequelize);
 EventFactory(sequelize);
+ChurchUserFactory(sequelize);
+AssociateUserChurch();
 AssociateChurchEvent();
 
 
