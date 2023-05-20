@@ -2,7 +2,9 @@ import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize }
 import { ChurchUser } from "./churchUser";
 
 export class Church extends Model<InferAttributes<Church>, InferCreationAttributes<Church>>{
+    
     declare churchId: number;
+    declare userId : number;
     declare churchName: string;
     declare street: string;
     declare city: string;
@@ -24,6 +26,10 @@ export function ChurchFactory(sequelize: Sequelize) {
           primaryKey: true,
           allowNull: false
       },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
       churchName: {
           type: DataTypes.STRING,
           allowNull: false,

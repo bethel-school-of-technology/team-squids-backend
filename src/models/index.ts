@@ -5,7 +5,8 @@ import { ChurchFactory, AssociateUserChurch  } from "./church";
 
 const dbName = 'ChurchDB';
 const username = 'root';
-const password = 'password1';
+const password = 'Password1!';
+
 // const password = '0624';
 
 

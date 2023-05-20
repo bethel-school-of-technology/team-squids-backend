@@ -3,6 +3,7 @@ import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize }
 
 export class ChurchUser extends Model<InferAttributes<ChurchUser>, InferCreationAttributes<ChurchUser>>{
     declare userId: number;
+
     declare email: string;
     declare password: string;
     
@@ -16,6 +17,7 @@ export function ChurchUserFactory( sequelize: Sequelize ) {
             primaryKey: true,
             allowNull: false
         },
+
         
         email: {
             type: DataTypes.STRING,
