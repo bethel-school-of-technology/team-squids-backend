@@ -78,6 +78,7 @@ export function EventFactory(sequelize: Sequelize){
 
         description: {
             type: DataTypes.STRING,
+            
 
         },
 

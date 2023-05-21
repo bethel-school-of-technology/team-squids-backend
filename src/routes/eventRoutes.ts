@@ -7,7 +7,7 @@ router.get("/", getAllEvents)
 router.get("/:eventId", getEvent)
 router.get('/searchEvents', getTenEvents)
 router.post("/", createEvent)
-router.put('/editevent', updateEvent)
+router.put('/editevent/:eventId', updateEvent)
 router.delete("/:eventId", deleteEvent)
 
-// export default router;
+export default router;
