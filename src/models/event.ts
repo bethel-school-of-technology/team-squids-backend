@@ -13,7 +13,7 @@ export class Event extends Model<InferAttributes<Event>, InferCreationAttributes
     declare eventCity: string;
     declare eventState: string;
     declare eventZip:string;
-    declare eventType: "Family" | "Youth" | "Young Adults" | "Single" | "womans"|"Mens"|"Senior";
+    declare eventType: "Family" | "Youth" | "Young Adults" | "Single" | "Womans"|"Mens"|"Senior";
     declare description: string;
     declare createdAt?: Date;
     declare updatedAt?: Date;
@@ -76,7 +76,7 @@ export function EventFactory(sequelize: Sequelize){
         eventType: {
             type: DataTypes.STRING,
             validate: {
-                isIn: [[ "Family", "Youth", "Young Adults", "Single", "womans","Mens","Senior"]]
+                isIn: [[ "Family", "Youth", "Young Adults", "Single", "Womans","Mens","Senior"]]
             },
             allowNull: false
         },
