@@ -76,7 +76,7 @@ export function ChurchFactory(sequelize: Sequelize) {
         allowNull: false,
       },
       welcomeMessage: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1000),
         allowNull: true,
       },
       serviceTime: {

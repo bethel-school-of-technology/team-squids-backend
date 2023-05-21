@@ -8,11 +8,13 @@ export const createChurch: RequestHandler = async (req, res, next) => {
   if (
       
       newChurch.churchName,
+      newChurch.denomination,
       newChurch.street,
       newChurch.city,
       newChurch.state,
       newChurch.zip,
       newChurch.phoneNumber,
+      newChurch.email,
       newChurch.welcomeMessage,
       newChurch.serviceTime,
       newChurch.imageUrl,
@@ -45,7 +47,7 @@ export const editChurch: RequestHandler = async (req, res, next) =>{
     let churchId = req.params.id;
     let newChurch:Church=req.body;
     let churchFound = await Church.findByPk(churchId);
-    if (churchFound && churchFound.churchId ===newChurch.churchId && newChurch.userId &&newChurch.churchName && newChurch.street && newChurch.city && newChurch.state && newChurch.zip && newChurch.phoneNumber && newChurch.welcomeMessage && newChurch.serviceTime && newChurch.imageUrl && newChurch.website){
+    if (churchFound && churchFound.churchId ===newChurch.churchId && newChurch.userId &&newChurch.churchName && newChurch.denomination && newChurch.street && newChurch.city && newChurch.state && newChurch.zip && newChurch.phoneNumber && newChurch.email && newChurch.welcomeMessage && newChurch.serviceTime && newChurch.imageUrl && newChurch.website){
         await Church.update(newChurch,{where:{churchId:churchId}});
         res.status(200).json();
     }
