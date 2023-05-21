@@ -20,7 +20,7 @@ export class Church extends Model<
   declare state: string;
   declare zip: string;
   declare phoneNumber: string;
-  declare email: string;
+  declare churchEmail: string;
   declare welcomeMessage: string;
   declare serviceTime: string;
   declare imageUrl: string;
@@ -71,12 +71,12 @@ export function ChurchFactory(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      email: {
+      churchEmail: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       welcomeMessage: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1000),
         allowNull: true,
       },
       serviceTime: {

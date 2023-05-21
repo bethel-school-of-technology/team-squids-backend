@@ -7,12 +7,13 @@ export class Event extends Model<InferAttributes<Event>, InferCreationAttributes
     declare churchId: number;
     declare eventTitle: string;
     declare eventDate: Date;
+    declare eventDay: string;
     declare eventTime: string;
     declare eventStreet: string;
     declare eventCity: string;
     declare eventState: string;
     declare eventZip:string;
-    declare eventType: "Family" | "Youth" | "Young Adults" | "Single" | "Senior";
+    declare eventType: "Family" | "Youth" | "Young Adults" | "Single" | "Womans"|"Mens"|"Senior";
     declare description: string;
     declare createdAt?: Date;
     declare updatedAt?: Date;
@@ -40,6 +41,10 @@ export function EventFactory(sequelize: Sequelize){
 
         eventDate: {
             type: DataTypes.DATE,
+            allowNull: false
+        },
+        eventDay: {
+            type: DataTypes.STRING,
             allowNull: false
         },
 
@@ -71,13 +76,13 @@ export function EventFactory(sequelize: Sequelize){
         eventType: {
             type: DataTypes.STRING,
             validate: {
-                isIn: [[ "Family", "Youth", "Young Adults", "Single", "Senior"]]
+                isIn: [[ "Family", "Youth", "Young Adults", "Single", "Womans","Mens","Senior"]]
             },
             allowNull: false
         },
 
         description: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(1000),
             
 
         },
