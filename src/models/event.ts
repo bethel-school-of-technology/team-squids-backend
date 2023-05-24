@@ -14,6 +14,8 @@ export class Event extends Model<
   declare eventId: number;
   declare churchId: number;
   declare eventTitle: string;
+  declare eventDay: string;
+  declare eventTime: string;
   declare eventDate: Date;
   declare eventStreet: string;
   declare eventCity: string;
@@ -57,6 +59,17 @@ export function EventFactory(sequelize: Sequelize) {
         type: DataTypes.DATE,
         allowNull: false,
       },
+
+      eventDay: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      eventTime: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
       eventStreet: {
         type: DataTypes.STRING,
         allowNull: false,
