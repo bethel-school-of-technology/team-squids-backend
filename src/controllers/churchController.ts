@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import { Church} from "../models/church";
+import { Event } from "../models/event";
+import { Op } from "sequelize";
 // import { comparePasswords, hashPassword } from "../services/auth";
 // import { signUserToken, verifyUser } from "../services/authService";
 
@@ -38,7 +40,16 @@ res.json(churchFound)
 
 export const getOneChurch: RequestHandler = async (req, res, next) => {
     let churchId = req.params.id;
-    let church = await Church.findByPk(churchId);
+    let church = await Church.findByPk(churchId, {
+      include: {
+        model: Event,
+        where: {
+          eventDate: {
+            [Op.gte]: Date.now()
+          }
+        }
+      }
+    });
     res.status(200).json(church);
   }
 
