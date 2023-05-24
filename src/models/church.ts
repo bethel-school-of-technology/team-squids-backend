@@ -49,7 +49,6 @@ export function ChurchFactory(sequelize: Sequelize) {
       denomination: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       street: {
         type: DataTypes.STRING,

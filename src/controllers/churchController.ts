@@ -1,84 +1,104 @@
 import { RequestHandler } from "express";
-import { Church} from "../models/church";
+import { Church } from "../models/church";
 import { Event } from "../models/event";
 import { Op } from "sequelize";
+import { ChurchUser } from "../models/churchUser";
 // import { comparePasswords, hashPassword } from "../services/auth";
 // import { signUserToken, verifyUser } from "../services/authService";
 
-export const createChurch: RequestHandler = async (req, res, next) => { 
+export const createChurch: RequestHandler = async (req, res, next) => {
   let newChurch: Church = req.body;
   if (
-      
-      newChurch.churchName,
-      newChurch.denomination,
-      newChurch.street,
-      newChurch.city,
-      newChurch.state,
-      newChurch.zip,
-      newChurch.phoneNumber,
-      newChurch.churchEmail,
-      newChurch.welcomeMessage,
-      newChurch.serviceTime,
-      newChurch.imageUrl,
-      newChurch.website
-    ) {
-      let created = await Church.create(newChurch);
-      
-      res.status(201).json(created);
+
+    newChurch.churchName,
+    newChurch.denomination,
+    newChurch.street,
+    newChurch.city,
+    newChurch.state,
+    newChurch.zip,
+    newChurch.phoneNumber,
+    newChurch.churchEmail,
+    newChurch.welcomeMessage,
+    newChurch.serviceTime,
+    newChurch.imageUrl,
+    newChurch.website
+  ) {
+    let created = await Church.create(newChurch);
+
+    res.status(201).json(created);
   }
   else {
-      res.status(400).send();
+    res.status(400).send();
   }
 
 }
 
 export const getChurch: RequestHandler = async (req, res, next) => {
 
-let churchFound:Church[]= await Church.findAll();
-res.json(churchFound)
+  let churchFound: Church[] = await Church.findAll();
+  res.json(churchFound)
 }
 
 export const getOneChurch: RequestHandler = async (req, res, next) => {
-    let churchId = req.params.id;
-    let church = await Church.findByPk(churchId, {
-      include: {
+  const churchId = req.params.id;
+  const church = await Church.findByPk(churchId, {
+    include: [
+      {
         model: Event,
         where: {
           eventDate: {
             [Op.gte]: Date.now()
           }
         }
+      },
+      {
+        model: ChurchUser,
+        include: [
+          {
+            model: Church,
+            where: {
+              userId: churchId
+            }
+          }
+        ]
       }
-    });
+    ]
+  });
+
+  if (church) {
     res.status(200).json(church);
+  } else {
+    res.status(404).send("Error: Church not found");
   }
+};
 
-export const editChurch: RequestHandler = async (req, res, next) =>{
-   
-    let churchId = req.params.id;
-    let newChurch:Church=req.body;
-    let churchFound = await Church.findByPk(churchId);
-    if (churchFound && churchFound.churchId ===newChurch.churchId && newChurch.userId &&newChurch.churchName && newChurch.denomination && newChurch.street && newChurch.city && newChurch.state && newChurch.zip && newChurch.phoneNumber && newChurch.churchEmail && newChurch.welcomeMessage && newChurch.serviceTime && newChurch.imageUrl && newChurch.website){
-        await Church.update(newChurch,{where:{churchId:churchId}});
-        res.status(200).json();
-    }
-    else{
-        res.status(400).json();
-    }
-}
 
-export const deleteChurch:RequestHandler = async(req,res, next) => {
-    
-    let churchId = req.params.id;
-    let churchFound = await Church.findByPk(churchId);
-    if (churchFound){
-        await Church.destroy({
-            where:{churchId:churchId}
-        });
-        res.status(200).json();
+export const editChurch: RequestHandler = async (req, res, next) => {
+
+  let churchId = req.params.id;
+  let newChurch: Church = req.body;
+  let churchFound = await Church.findByPk(churchId);
+  if (churchFound && churchFound.churchId === newChurch.churchId && newChurch.userId && newChurch.churchName && newChurch.denomination && newChurch.street && newChurch.city && newChurch.state && newChurch.zip && newChurch.phoneNumber && newChurch.churchEmail && newChurch.welcomeMessage && newChurch.serviceTime && newChurch.imageUrl && newChurch.website) {
+    await Church.update(newChurch, { where: { churchId: churchId } });
+    res.status(200).json();
   }
   else {
-      res.status(404).json();
-  
-    }
+    res.status(400).json();
   }
+}
+
+export const deleteChurch: RequestHandler = async (req, res, next) => {
+
+  let churchId = req.params.id;
+  let churchFound = await Church.findByPk(churchId);
+  if (churchFound) {
+    await Church.destroy({
+      where: { churchId: churchId }
+    });
+    res.status(200).json();
+  }
+  else {
+    res.status(404).json();
+
+  }
+}
