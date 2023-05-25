@@ -82,7 +82,6 @@ export const createEvent: RequestHandler = async (req, res, next) => {
     ) {
         let created = await Event.create(newEvent);
         res.status(200).json(created);
-
     }
     else {
         res.status(400).send();
@@ -92,9 +91,9 @@ export const createEvent: RequestHandler = async (req, res, next) => {
 export const updateEvent: RequestHandler = async (req, res, next) => {
     let user: ChurchUser | null = await verifyUser(req);
     if (!user) {
-      return res.status(403).send();
+        return res.status(403).send();
     }
-  
+
     let eventIdNum = parseInt(req.params.eventId);
     let editedEvent: Event = req.body;
     let matchingEvent = await Event.findByPk(eventIdNum);
@@ -105,30 +104,30 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
     if (!church || church.dataValues.userId !== user.userId) {
         return res.status(403).send("Not the same user");
     }
-  
+
     // If the event that was requested has all of these attributes and the churchId is not changed, edit the event
     if (
-      matchingEvent &&
-      matchingEvent.eventId == eventIdNum &&
-      editedEvent.eventTitle &&
-      editedEvent.eventStreet &&
-      editedEvent.description &&
-      editedEvent.eventDate &&
-      editedEvent.eventDay &&
-      editedEvent.eventTime &&
-      editedEvent.eventType &&
-      editedEvent.eventCity &&
-      editedEvent.eventState &&
-      editedEvent.eventZip &&
-      matchingEvent.churchId === editedEvent.churchId // Ensure the churchId is not changed
+        matchingEvent &&
+        matchingEvent.eventId == eventIdNum &&
+        editedEvent.eventTitle &&
+        editedEvent.eventStreet &&
+        editedEvent.description &&
+        editedEvent.eventDate &&
+        editedEvent.eventDay &&
+        editedEvent.eventTime &&
+        editedEvent.eventType &&
+        editedEvent.eventCity &&
+        editedEvent.eventState &&
+        editedEvent.eventZip &&
+        matchingEvent.churchId === editedEvent.churchId // Ensure the churchId is not changed
     ) {
-      await Event.update(editedEvent, { where: { eventId: eventIdNum } });
-      return res.status(200).send("Event edited");
+        await Event.update(editedEvent, { where: { eventId: eventIdNum } });
+        return res.status(200).send("Event edited");
     } else {
-      return res.status(400).send("Not enough data");
+        return res.status(400).send("Not enough data");
     }
-  };
-  
+};
+
 
 export const deleteEvent: RequestHandler = async (req, res, next) => {
     let user: ChurchUser | null = await verifyUser(req);
@@ -139,6 +138,12 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
     let eventId = req.params.eventId;
     let foundEvent = await Event.findByPk(eventId);
 
+    //Is the account the same one that created the church? If so continue
+    let church = await Church.findByPk(foundEvent?.churchId);
+    if (!church || church.dataValues.userId !== user.userId) {
+        return res.status(403).send("Not the same user");
+    }
+
     //if the user is verified and the event is found, delete it
     if (foundEvent) {
         await Event.destroy({
@@ -148,5 +153,4 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
     } else {
         res.status(404).json();
     }
-
 }
