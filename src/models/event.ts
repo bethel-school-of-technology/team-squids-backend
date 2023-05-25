@@ -1,23 +1,36 @@
-import { DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize } from "sequelize";
+import {
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  Sequelize,
+} from "sequelize";
 import { Church } from "./church";
 
-
-export class Event extends Model<InferAttributes<Event>, InferCreationAttributes<Event>>{
-    declare eventId: number;
-    declare churchId: number;
-    declare eventTitle: string;
-    declare eventDate: Date;
-    declare eventDay: string;
-    declare eventTime: string;
-    declare eventStreet: string;
-    declare eventCity: string;
-    declare eventState: string;
-    declare eventZip:string;
-    declare eventType: "Family" | "Youth" | "Young Adults" | "Single" | "Womans"|"Mens"|"Senior";
-    declare description: string;
-    declare createdAt?: Date;
-    declare updatedAt?: Date;
-        
+export class Event extends Model<
+  InferAttributes<Event>,
+  InferCreationAttributes<Event>
+> {
+  declare eventId: number;
+  declare churchId: number;
+  declare eventTitle: string;
+  declare eventDate: Date;
+  declare eventStreet: string;
+  declare eventCity: string;
+  declare eventState: string;
+  declare eventZip: string;
+  declare eventType:
+    | "Family"
+    | "Youth"
+    | "Young Adults"
+    | "Single"
+    | "Womans"
+    | "Mens"
+    | "Senior";
+  declare description: string;
+  declare imageUrl: string;
+  declare createdAt?: Date;
+  declare updatedAt?: Date;
 }
 
 export function EventFactory(sequelize: Sequelize){
@@ -102,18 +115,9 @@ export function EventFactory(sequelize: Sequelize){
         tableName: 'events',
         sequelize
     });
-
 }
 
-export function AssociateChurchEvent(){
-    Church.hasMany(Event, { foreignKey: 'churchId' });
-    Event.belongsTo(Church, { foreignKey: 'churchId' });
-
+export function AssociateChurchEvent() {
+  Church.hasMany(Event, { foreignKey: "churchId" });
+  Event.belongsTo(Church, { foreignKey: "churchId" });
 }
-
-
-
-
-
-
-

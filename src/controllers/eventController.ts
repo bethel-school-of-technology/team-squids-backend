@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { request } from "http";
 import { verifyUser } from "../services/authService";
 import { Event } from "../models/event";
+import { Church } from "../models/church";
 import { ChurchUser } from "../models/churchUser";
 import { Church } from "../models/church";
 
@@ -13,7 +14,18 @@ export const getAllEvents: RequestHandler = async (req, res, next) => {
 
 export const getEvent: RequestHandler = async (req, res, next) => {
     let eventId = req.params.eventId
-    let foundEvent = await Event.findByPk(eventId)
+    let foundEvent = await Event.findByPk(eventId, {
+        include: [
+            {
+              model: Church,
+              include: [
+                {
+                  model: ChurchUser
+                }
+              ]
+            }
+          ]
+    })
 
     //Finding if the requested event object exists, then sending it
     if (foundEvent) {
