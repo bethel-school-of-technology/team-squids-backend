@@ -2,6 +2,9 @@ import { RequestHandler } from "express";
 import { ChurchUser } from "../models/churchUser";
 import { comparePasswords, hashPassword } from "../services/auth";
 import { signUserToken, verifyUser } from "../services/authService"
+import { Church } from "../models/church";
+import { Event } from "../models/event";
+import { Op } from "sequelize";
 
 
 
@@ -149,6 +152,7 @@ export const modifyUser: RequestHandler = async ( req, res, next ) => {
     else {
         res.status(400).send();
 
+}
 }
 
 
