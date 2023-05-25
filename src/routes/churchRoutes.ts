@@ -3,15 +3,15 @@ import { createChurch, deleteChurch, editChurch, getChurch, getOneChurch } from 
 
 const router = Router();
 
-router.get('/',getChurch);
+router.get('/', getChurch);
 
-router.post('/',createChurch);
+router.post('/', createChurch);
 
 router.get('/:id', getOneChurch);
 
-router.put('/:id',editChurch);
+router.put('/:id', editChurch);
 
-router.delete('/:id',deleteChurch);
+router.delete('/:id', deleteChurch);
 
 
 export default router;
