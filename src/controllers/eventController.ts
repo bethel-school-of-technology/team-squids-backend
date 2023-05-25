@@ -90,8 +90,6 @@ export const createEvent: RequestHandler = async (req, res, next) => {
         return res.status(403).send();
     }
 
-    // if (verified) {
-        //If thie user is verified and if the event has every required parameter, it will create a new event
         let newEvent: Event = req.body;
         if (
             newEvent.churchId,
@@ -104,12 +102,24 @@ export const createEvent: RequestHandler = async (req, res, next) => {
             newEvent.eventType,
             newEvent.description
         ) {
+            let church: Church | null = await Church.findByPk(newEvent.churchId)
+            if (church === null) {
+                return res.status(400).send()
+            }
+
+            if (user.dataValues.userId != church.userId) {
+                return res.status(401).send("Not the same user")
+            }
+
             let created = await Event.create(newEvent);
-            res.status(200).json(created);
-        
+            if (created) {
+                return res.status(200).json(created);
+            }
+
+            return res.status(400).json("error");
         } 
         else {
-            res.status(400).send();
+            return res.status(400).send("Data is of the wrong format");
         }
 }
 
