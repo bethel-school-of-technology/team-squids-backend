@@ -95,29 +95,33 @@ export const getUser: RequestHandler = async ( req, res, next ) => {
 
 
 export const modifyUser: RequestHandler = async ( req, res, next ) => {
-    let newUser= req.body;
+    let newUser = req.body;
     let user = await verifyUser(req);
 
+    //Does the user exist? if yes contiune
     if (!user) {
         return res.status(403).send();
     }
-    if(user.userId !== userId){
-        throw new error(Unauth)
-    }
-    
-    let userId = req.params.id;
-    
-    
-    console.log(req.body);
+
+    let userId = parseInt(req.params.id);
     newUser.userId = userId
-    console.log(newUser);
-    let findUser = await ChurchUser.findByPk(userId);
-    if (findUser && findUser.userId === newUser.userId && newUser.email && newUser.password ){
-        await ChurchUser.update(newUser,{where:{ userId}});
+    newUser.password = await hashPassword(newUser.password)
+
+    //Is the user making the edit the same user editing themselves? if yes continue
+    if (user.userId != userId){
+        return res.status(403).send("Not the same user");
+    }
+
+    let foundUser = await ChurchUser.findByPk(userId);
+    if (!foundUser) {
+        return res.status(404).send();
+    }
+    if (foundUser.dataValues.userId === parseInt(newUser.userId)) {
+        await ChurchUser.update(newUser, {where: {userId}});
         res.status(200).json();
     }
-    else{
-        res.status(400).send("why");
+    else {
+        res.status(400).send();
     }
 
 }
@@ -130,11 +134,18 @@ export const deleteUser: RequestHandler = async ( req, res, next ) => {
     if (!user) {
         return res.status(403).send();
     }
-    let churchUser = req.params.id;
-    let findUser = await ChurchUser.findByPk(churchUser);
+
+    let userId = parseInt(req.params.id);
+    let findUser = await ChurchUser.findByPk(userId);
+
+    //Is the user making the edit the same user editing themselves? if yes continue
+    if (user.userId != userId){
+        return res.status(403).send("Not the same user");
+    }
+
     if (findUser){
         await ChurchUser.destroy({
-            where:{userId: churchUser}
+            where:{userId: userId}
         });
         res.status(200).json();
   }
