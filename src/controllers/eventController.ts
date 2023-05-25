@@ -4,16 +4,11 @@ import { verifyUser } from "../services/authService";
 import { Event } from "../models/event";
 import { Church } from "../models/church";
 import { ChurchUser } from "../models/churchUser";
+import { Op } from "sequelize";
 
 export const getAllEvents: RequestHandler = async (req, res, next) => {
     //Basic return of all events
-    let EventsInDB: Event[] = await Event.findAll();
-    res.json(EventsInDB)
-}
-
-export const getEvent: RequestHandler = async (req, res, next) => {
-    let eventId = req.params.eventId
-    let foundEvent = await Event.findByPk(eventId, {
+    let EventsInDB: Event[] = await Event.findAll({
         include: [
             {
               model: Church,
@@ -24,6 +19,32 @@ export const getEvent: RequestHandler = async (req, res, next) => {
               ]
             }
           ]
+    });
+    res.json(EventsInDB)
+}
+
+export const getEvent: RequestHandler = async (req, res, next) => {
+    let eventId = req.params.eventId
+
+    let foundEvent = await Event.findByPk(eventId, {
+        include: [
+            {
+                model: Church,
+                include: [
+                    {
+                      model: Event,
+                      where: {
+                        eventDate: {
+                          [Op.gte]: Date.now()
+                        }
+                      }
+                    },
+                    {
+                        model: ChurchUser
+                    }
+                ]
+            }   
+        ]
     })
 
     //Finding if the requested event object exists, then sending it
