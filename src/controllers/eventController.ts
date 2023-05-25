@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { request } from "http";
 import { verifyUser } from "../services/authService";
 import { Event } from "../models/event";
+import { Church } from "../models/church";
 import { ChurchUser } from "../models/churchUser";
 
 export const getAllEvents: RequestHandler = async (req, res, next) => {
@@ -12,7 +13,18 @@ export const getAllEvents: RequestHandler = async (req, res, next) => {
 
 export const getEvent: RequestHandler = async (req, res, next) => {
     let eventId = req.params.eventId
-    let foundEvent = await Event.findByPk(eventId)
+    let foundEvent = await Event.findByPk(eventId, {
+        include: [
+            {
+              model: Church,
+              include: [
+                {
+                  model: ChurchUser
+                }
+              ]
+            }
+          ]
+    })
 
     //Finding if the requested event object exists, then sending it
     if (foundEvent) {
@@ -64,8 +76,6 @@ export const createEvent: RequestHandler = async (req, res, next) => {
             newEvent.churchId,
             newEvent.eventTitle,
             newEvent.eventDate,
-            newEvent.eventDay,
-            newEvent.eventTime,
             newEvent.eventStreet,
             newEvent.eventCity,
             newEvent.eventState,
@@ -77,20 +87,9 @@ export const createEvent: RequestHandler = async (req, res, next) => {
             res.status(200).json(created);
         
         } 
-        else{
+        else {
             res.status(400).send();
         }
-        // if (newEvent.eventTitle && newEvent.churchId && newEvent.eventDate && newEvent.eventDay && newEvent.eventTime && newEvent.eventStreet && newEvent.eventCity && newEvent.eventState && newEvent.eventZip && newEvent.eventType && newEvent.description ) {
-        //     let created = await Event.create(newEvent);
-        //     res.status(201).json(created);
-        // } else {
-        //     res.status(400).json();
-        // }
-    // } else {
-    //     res.status(403).json()
-    // }
-
-
 }
 
 export const updateEvent: RequestHandler = async (req, res, next) => {
@@ -110,8 +109,8 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
 
     //If the event that was requested has all of these attributes, edit the event
     if (matchingEvent && matchingEvent.eventId ==
-        eventIdNum && editedEvent.eventTitle && editedEvent.churchId && editedEvent.eventStreet && editedEvent.description && editedEvent.eventDate && editedEvent.eventDay && editedEvent.eventTime
-        && editedEvent.eventType && editedEvent.eventCity && editedEvent.eventState && editedEvent.eventZip) {
+        eventIdNum && editedEvent.eventTitle && editedEvent.churchId && editedEvent.eventStreet && editedEvent.description && editedEvent.eventDate &&
+        editedEvent.eventType && editedEvent.eventCity && editedEvent.eventState && editedEvent.eventZip) {
         await Event.update(editedEvent, { where: {eventId: eventIdNum} })
         res.status(200).json();
     } else {
@@ -140,5 +139,4 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
         } else {
             res.status(404).json();
         }
-    
-}
+  }

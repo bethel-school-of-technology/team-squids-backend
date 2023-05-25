@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import { Church} from "../models/church";
+import { Event } from "../models/event";
+import { Op } from "sequelize";
 import { ChurchUser } from "../models/churchUser";
 import { verifyUser } from "../services/authService";
 
@@ -43,7 +45,16 @@ res.json(churchFound)
 
 export const getOneChurch: RequestHandler = async (req, res, next) => {
     let churchId = req.params.id;
-    let church = await Church.findByPk(churchId);
+    let church = await Church.findByPk(churchId, {
+      include: {
+        model: Event,
+        where: {
+          eventDate: {
+            [Op.gte]: Date.now()
+          }
+        }
+      }
+    });
     res.status(200).json(church);
   }
 
@@ -57,7 +68,7 @@ export const editChurch: RequestHandler = async (req, res, next) =>{
     let churchId = req.params.id;
     let newChurch:Church=req.body;
     let churchFound = await Church.findByPk(churchId);
-    if (churchFound && churchFound.churchId ===newChurch.churchId && newChurch.userId &&newChurch.churchName && newChurch.denomination && newChurch.street && newChurch.city && newChurch.state && newChurch.zip && newChurch.phoneNumber && newChurch.churchEmail && newChurch.welcomeMessage && newChurch.serviceTime && newChurch.imageUrl && newChurch.website){
+    if (churchFound && churchFound.churchId === newChurch.churchId && newChurch.userId &&newChurch.churchName && newChurch.denomination && newChurch.street && newChurch.city && newChurch.state && newChurch.zip && newChurch.phoneNumber && newChurch.churchEmail && newChurch.welcomeMessage && newChurch.serviceTime && newChurch.imageUrl && newChurch.website){
         await Church.update(newChurch,{where:{churchId:churchId}});
         res.status(200).json();
     }
