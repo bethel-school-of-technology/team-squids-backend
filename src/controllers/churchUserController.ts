@@ -5,14 +5,17 @@ import { signUserToken, verifyUser } from "../services/authService"
 
 
 
-export const allUser: RequestHandler = async ( req, res, next ) => {
+
+
+export const allUser: RequestHandler = async (req, res, next) => {
     let users = await ChurchUser.findAll();
     res.status(200).json(users)
 }
 
 
-export const createUser: RequestHandler = async ( req, res, next ) => {
+export const createUser: RequestHandler = async (req, res, next) => {
     let newUser: ChurchUser = req.body;
+
     // if (
         
     //   newUser.email,
@@ -44,7 +47,8 @@ export const createUser: RequestHandler = async ( req, res, next ) => {
 }
 
 
-export const signInUser: RequestHandler = async ( req, res, next ) => {
+export const signInUser: RequestHandler = async (req, res, next) => {
+
 
 let validUser: ChurchUser | null = await ChurchUser.findOne({
     where: {email: req.body.email}
@@ -63,20 +67,21 @@ let validUser: ChurchUser | null = await ChurchUser.findOne({
         } else {
             res.status(401).json('Password invalid');
         } 
+
     } else {
         res.status(401).json('Email invalid')
     }
 };
-    
 
 
-export const signOutUser: RequestHandler = async ( req, res, next ) => {
-    
+
+export const signOutUser: RequestHandler = async (req, res, next) => {
+
 
 }
 
 
-export const getUser: RequestHandler = async ( req, res, next ) => {
+export const getUser: RequestHandler = async (req, res, next) => {
     // let user: ChurchUser | null = await verifyUser(req);
 
     // if (user) {
@@ -87,10 +92,31 @@ export const getUser: RequestHandler = async ( req, res, next ) => {
     // } else {
     //     res.status(401).send();
     // }
+    const currentDate = new Date().toISOString().slice(0, 10);
     let churchUser = req.params.id;
-    let user = await ChurchUser.findByPk(churchUser);
+    let user = await ChurchUser.findByPk(churchUser, {
+        include: [{
+            model: Church,
+            where: {
+                userId: churchUser
+            }
+        }, 
+        {
+            model: Event,
+            where: {
+                churchId: {
+                    [Op.col]: 'ChurchUser.churchId'}, // foreign key
+                eventDate: {
+                    [Op.gte]: currentDate
+                }
+            } 
+        }
+
+        ]
+    });
     res.status(200).json(user);
-  }
+}
+
 
 
 
@@ -122,7 +148,6 @@ export const modifyUser: RequestHandler = async ( req, res, next ) => {
     }
     else {
         res.status(400).send();
-    }
 
 }
 
@@ -146,11 +171,12 @@ export const deleteUser: RequestHandler = async ( req, res, next ) => {
     if (findUser){
         await ChurchUser.destroy({
             where:{userId: userId}
+
         });
         res.status(200).json();
-  }
-  else {
-      res.status(404).json();
-  
     }
-  }
+    else {
+        res.status(404).json();
+
+    }
+}
