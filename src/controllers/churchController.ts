@@ -3,13 +3,15 @@ import { Church } from "../models/church";
 import { Event } from "../models/event";
 import { Op } from "sequelize";
 import { ChurchUser } from "../models/churchUser";
-// import { comparePasswords, hashPassword } from "../services/auth";
-// import { signUserToken, verifyUser } from "../services/authService";
-
-export const createChurch: RequestHandler = async (req, res, next) => {
-  let newChurch: Church = req.body;
+import { verifyUser } from "../services/authService";
+  
+  export const createChurch: RequestHandler = async (req, res, next) => { 
+  let user: ChurchUser | null = await verifyUser(req);
+  if (!user) {
+    return res.status(403).send();
+  }
+    
   if (
-
     newChurch.churchName,
     newChurch.denomination,
     newChurch.street,
@@ -24,7 +26,6 @@ export const createChurch: RequestHandler = async (req, res, next) => {
     newChurch.website
   ) {
     let created = await Church.create(newChurch);
-
     res.status(201).json(created);
   }
   else {
@@ -73,7 +74,12 @@ export const getOneChurch: RequestHandler = async (req, res, next) => {
 };
 
 export const editChurch: RequestHandler = async (req, res, next) =>{
-   
+  let user: ChurchUser | null = await verifyUser(req);
+  if (!user) {
+    return res.status(403).send();
+  }
+
+    //let uer:
     let churchId = req.params.id;
     let newChurch:Church=req.body;
     let churchFound = await Church.findByPk(churchId);
@@ -86,15 +92,19 @@ export const editChurch: RequestHandler = async (req, res, next) =>{
     }
 }
 
-export const deleteChurch: RequestHandler = async (req, res, next) => {
-
-  let churchId = req.params.id;
-  let churchFound = await Church.findByPk(churchId);
-  if (churchFound) {
-    await Church.destroy({
-      where: { churchId: churchId }
-    });
-    res.status(200).json();
+export const deleteChurch:RequestHandler = async(req,res, next) => {
+  let user: ChurchUser | null = await verifyUser(req);
+  if (!user) {
+    return res.status(403).send();
+  }
+    
+    let churchId = req.params.id;
+    let churchFound = await Church.findByPk(churchId);
+    if (churchFound){
+        await Church.destroy({
+            where:{churchId:churchId}
+        });
+        res.status(200).json();
   }
   else {
     res.status(404).json();
