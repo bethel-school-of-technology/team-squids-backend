@@ -6,7 +6,7 @@ import { verifyUser } from "../services/authService";
 export const createChurch: RequestHandler = async (req, res, next) => { 
   let user: ChurchUser | null = await verifyUser(req);
   if (!user) {
-    return res.status(403).send();
+    return res.status(403).send("User is not signed In");
   }
 
   let newChurch: Church = req.body;
@@ -82,6 +82,5 @@ export const deleteChurch:RequestHandler = async(req,res, next) => {
   }
   else {
       res.status(404).json();
-  
     }
   }

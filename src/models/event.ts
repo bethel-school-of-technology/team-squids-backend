@@ -43,6 +43,7 @@ export function EventFactory(sequelize: Sequelize){
             type: DataTypes.DATE,
             allowNull: false
         },
+        
         eventDay: {
             type: DataTypes.STRING,
             allowNull: false
@@ -83,8 +84,6 @@ export function EventFactory(sequelize: Sequelize){
 
         description: {
             type: DataTypes.STRING(1000),
-            
-
         },
 
         createdAt: {
