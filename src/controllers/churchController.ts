@@ -10,6 +10,8 @@ import { verifyUser } from "../services/authService";
   if (!user) {
     return res.status(403).send();
   }
+  
+  let newChurch: Church = req.body;
     
   if (
     newChurch.churchName,
@@ -35,8 +37,13 @@ import { verifyUser } from "../services/authService";
 }
 
 export const getChurch: RequestHandler = async (req, res, next) => {
-
-  let churchFound: Church[] = await Church.findAll();
+  let churchFound: Church[] = await Church.findAll({
+    include: [
+      {
+        model: ChurchUser
+      }
+    ]
+  });
   res.json(churchFound)
 }
 
@@ -53,15 +60,7 @@ export const getOneChurch: RequestHandler = async (req, res, next) => {
         }
       },
       {
-        model: ChurchUser,
-        include: [
-          {
-            model: Church,
-            where: {
-              userId: churchId
-            }
-          }
-        ]
+        model: ChurchUser
       }
     ]
   });
