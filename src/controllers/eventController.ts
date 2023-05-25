@@ -97,8 +97,11 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
 
     //If the event that was requested has all of these attributes, edit the event
     if (matchingEvent && matchingEvent.eventId ==
+
         eventIdNum && editedEvent.eventTitle && editedEvent.churchId && editedEvent.eventStreet && editedEvent.description && editedEvent.eventDate
         && editedEvent.eventType && editedEvent.eventCity && editedEvent.eventState && editedEvent.eventZip) {
+
+        
         await Event.update(editedEvent, { where: {eventId: eventIdNum} })
         res.status(200).json();
     } else {
