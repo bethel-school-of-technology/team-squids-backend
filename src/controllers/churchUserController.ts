@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { ChurchUser } from "../models/churchUser";
-
+import { comparePasswords, hashPassword } from "../services/auth";
+import { signUserToken, verifyUser } from "../services/authService"
 
 
 
@@ -12,33 +13,34 @@ export const allUser: RequestHandler = async ( req, res, next ) => {
 
 export const createUser: RequestHandler = async ( req, res, next ) => {
     let newUser: ChurchUser = req.body;
-    if (
+    // if (
         
-      newUser.email,
-      newUser.password
+    //   newUser.email,
+    //   newUser.password
 
-      ) {
-        let create = await ChurchUser.create(newUser);
+    //   ) {
+    //     let create = await ChurchUser.create(newUser);
         
-        res.status(201).json(create);
-    }
-    else {
-        res.status(400).send();
-    } 
-    
-    // if (newUser.email && newUser.password) {
-    //     // hassPass will go here 
-        
-    //         let create = await ChurchUser.create(newUser);
-    //         res.status(200).json({
-    //             email: create.email,
-    //             passward: create.password,
-    //             userId: create.userId
-    //         });
-         
-    // } else {
-    //     res.status(400).send('Email and password required.')
+    //     res.status(201).json(create);
     // }
+    // else {
+    //     res.status(400).send();
+    // } 
+    
+    if (newUser.email && newUser.password) {
+        // hassPass will go here 
+    let hashedPasswrod = await hashPassword(newUser.password);
+    newUser.password =hashedPasswrod;
+      
+    let create = await ChurchUser.create(newUser);
+            res.status(200).json({
+                email: create.email,
+                userId: create.userId
+            });
+         
+    } else {
+        res.status(400).send('Email and password required.')
+    }
 }
 
 
@@ -48,17 +50,19 @@ let validUser: ChurchUser | null = await ChurchUser.findOne({
     where: {email: req.body.email}
 });
     if (validUser){
-   // add authenication 
+        // add authenication 
+        let matchPass = await comparePasswords(req.body.password, validUser.password);
+   
 
-    const matchPass = req.body.password === validUser.password;
+        // const matchPass = req.body.password === validUser.password;
     
-    if (matchPass) {
-        // if pass matches, generate token
-        // let token = await tknSignUser(validUser);
-        res.status(200).json({ message: 'Authentication successful' });
-    } else {
-        res.status(401).json('Password invalid');
-    } 
+        if (matchPass) {
+            // if pass matches, generate token
+            let token = await signUserToken(validUser);
+            res.status(200).json({ token });
+        } else {
+            res.status(401).json('Password invalid');
+        } 
     } else {
         res.status(401).json('Email invalid')
     }
@@ -91,21 +95,41 @@ export const getUser: RequestHandler = async ( req, res, next ) => {
 
 
 export const modifyUser: RequestHandler = async ( req, res, next ) => {
-    let churchUser = req.params.id;
-    let newUser: ChurchUser =  req.body;
-    let findUser = await ChurchUser.findByPk(churchUser);
+    let newUser= req.body;
+    let user = await verifyUser(req);
+
+    if (!user) {
+        return res.status(403).send();
+    }
+    if(user.userId !== userId){
+        throw new error(Unauth)
+    }
+    
+    let userId = req.params.id;
+    
+    
+    console.log(req.body);
+    newUser.userId = userId
+    console.log(newUser);
+    let findUser = await ChurchUser.findByPk(userId);
     if (findUser && findUser.userId === newUser.userId && newUser.email && newUser.password ){
-        await ChurchUser.update(newUser,{where:{ userId: churchUser }});
+        await ChurchUser.update(newUser,{where:{ userId}});
         res.status(200).json();
     }
     else{
-        res.status(400).json();
+        res.status(400).send("why");
     }
 
 }
 
 
+
 export const deleteUser: RequestHandler = async ( req, res, next ) => {
+    let user = await verifyUser(req);
+
+    if (!user) {
+        return res.status(403).send();
+    }
     let churchUser = req.params.id;
     let findUser = await ChurchUser.findByPk(churchUser);
     if (findUser){

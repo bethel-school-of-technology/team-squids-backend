@@ -1,12 +1,17 @@
 import { RequestHandler } from "express";
 import { Church} from "../models/church";
-// import { comparePasswords, hashPassword } from "../services/auth";
-// import { signUserToken, verifyUser } from "../services/authService";
+import { ChurchUser } from "../models/churchUser";
+import { verifyUser } from "../services/authService";
 
 export const createChurch: RequestHandler = async (req, res, next) => { 
+  let user: ChurchUser | null = await verifyUser(req);
+  if (!user) {
+    return res.status(403).send();
+  }
+
   let newChurch: Church = req.body;
+  newChurch.userId = user.userId;
   if (
-      
       newChurch.churchName,
       newChurch.denomination,
       newChurch.street,
@@ -43,7 +48,12 @@ export const getOneChurch: RequestHandler = async (req, res, next) => {
   }
 
 export const editChurch: RequestHandler = async (req, res, next) =>{
-   
+  let user: ChurchUser | null = await verifyUser(req);
+  if (!user) {
+    return res.status(403).send();
+  }
+
+    //let uer:
     let churchId = req.params.id;
     let newChurch:Church=req.body;
     let churchFound = await Church.findByPk(churchId);
@@ -57,6 +67,10 @@ export const editChurch: RequestHandler = async (req, res, next) =>{
 }
 
 export const deleteChurch:RequestHandler = async(req,res, next) => {
+  let user: ChurchUser | null = await verifyUser(req);
+  if (!user) {
+    return res.status(403).send();
+  }
     
     let churchId = req.params.id;
     let churchFound = await Church.findByPk(churchId);

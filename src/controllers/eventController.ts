@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
-// import { verifyUser } from "../services/authSerivce";
+import { request } from "http";
+import { verifyUser } from "../services/authService";
 import { Event } from "../models/event";
+import { ChurchUser } from "../models/churchUser";
 
 export const getAllEvents: RequestHandler = async (req, res, next) => {
     //Basic return of all events
@@ -50,7 +52,10 @@ export const getTenEvents: RequestHandler = async (req, res, next) => {
 }
 
 export const createEvent: RequestHandler = async (req, res, next) => {
-    // let verified = await verifyUser(req);
+    let user: ChurchUser | null = await verifyUser(req);
+    if (!user) {
+        return res.status(403).send();
+    }
 
     // if (verified) {
         //If thie user is verified and if the event has every required parameter, it will create a new event
@@ -75,7 +80,7 @@ export const createEvent: RequestHandler = async (req, res, next) => {
         else{
             res.status(400).send();
         }
-        // if (newEvent.eventTitle && newEvent.churchId && newEvent.eventDate && newEvent.eventTime && newEvent.eventType && newEvent.description && newEvent.eventCity && newEvent.eventStreet && newEvent.eventState && newEvent.eventZip) {
+        // if (newEvent.eventTitle && newEvent.churchId && newEvent.eventDate && newEvent.eventDay && newEvent.eventTime && newEvent.eventStreet && newEvent.eventCity && newEvent.eventState && newEvent.eventZip && newEvent.eventType && newEvent.description ) {
         //     let created = await Event.create(newEvent);
         //     res.status(201).json(created);
         // } else {
@@ -89,6 +94,12 @@ export const createEvent: RequestHandler = async (req, res, next) => {
 }
 
 export const updateEvent: RequestHandler = async (req, res, next) => {
+    let user: ChurchUser | null = await verifyUser(req);
+    if (!user) {
+        return res.status(403).send();
+    }
+    // let verified = await verifyUser(req);
+    //if (verified) {
     let eventId = req.params.eventId;
     let editedEvent: Event = req.body;
 
@@ -106,12 +117,17 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
     } else {
         res.status(400).json()
     }
+    // } else{
+    // res.status(400).json()
+    //}
 }
 
 export const deleteEvent: RequestHandler = async (req, res, next) => {
-    // let verified = await verifyUser(req);
-
-    // if (verified) {
+    let user: ChurchUser | null = await verifyUser(req);
+    if (!user) {
+        return res.status(403).send();
+    }
+    
         let eventId = req.params.eventId;
         let foundEvent = await Event.findByPk(eventId);
 
@@ -124,7 +140,5 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
         } else {
             res.status(404).json();
         }
-    // } else {
-    //     res.status(403).json()
-    // }
+    
 }
