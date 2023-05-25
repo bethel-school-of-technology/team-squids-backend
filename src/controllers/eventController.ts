@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
 // import { verifyUser } from "../services/authSerivce";
 import { Event } from "../models/event";
+import { Church } from "../models/church";
+import { ChurchUser } from "../models/churchUser";
 
 export const getAllEvents: RequestHandler = async (req, res, next) => {
     //Basic return of all events
@@ -10,7 +12,18 @@ export const getAllEvents: RequestHandler = async (req, res, next) => {
 
 export const getEvent: RequestHandler = async (req, res, next) => {
     let eventId = req.params.eventId
-    let foundEvent = await Event.findByPk(eventId)
+    let foundEvent = await Event.findByPk(eventId, {
+        include: [
+            {
+              model: Church,
+              include: [
+                {
+                  model: ChurchUser
+                }
+              ]
+            }
+          ]
+    })
 
     //Finding if the requested event object exists, then sending it
     if (foundEvent) {
@@ -70,20 +83,9 @@ export const createEvent: RequestHandler = async (req, res, next) => {
             res.status(200).json(created);
         
         } 
-        else{
+        else {
             res.status(400).send();
         }
-        // if (newEvent.eventTitle && newEvent.churchId && newEvent.eventDate && newEvent.eventTime && newEvent.eventType && newEvent.description && newEvent.eventCity && newEvent.eventStreet && newEvent.eventState && newEvent.eventZip) {
-        //     let created = await Event.create(newEvent);
-        //     res.status(201).json(created);
-        // } else {
-        //     res.status(400).json();
-        // }
-    // } else {
-    //     res.status(403).json()
-    // }
-
-
 }
 
 export const updateEvent: RequestHandler = async (req, res, next) => {
@@ -110,18 +112,18 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
     // let verified = await verifyUser(req);
 
     // if (verified) {
-        let eventId = req.params.eventId;
-        let foundEvent = await Event.findByPk(eventId);
+    let eventId = req.params.eventId;
+    let foundEvent = await Event.findByPk(eventId);
 
-        //if the user is verified and the event is found, delete it
-        if (foundEvent) {
-            await Event.destroy({
-                where: { eventId: eventId }
-            });
-            res.status(200).json();
-        } else {
-            res.status(404).json();
-        }
+    //if the user is verified and the event is found, delete it
+    if (foundEvent) {
+        await Event.destroy({
+            where: { eventId: eventId }
+        });
+        res.status(200).json();
+    } else {
+        res.status(404).json();
+    }
     // } else {
     //     res.status(403).json()
     // }
