@@ -69,46 +69,46 @@ export const getOneChurch: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const editChurch: RequestHandler = async (req, res, next) =>{
+
+export const editChurch: RequestHandler = async (req, res, next) => {
   let user: ChurchUser | null = await verifyUser(req);
   if (!user) {
     return res.status(403).send();
   }
 
-    
-    let churchId = req.params.id;
-    let editChurch: Church = req.body;
-    let matchingChurch = await Church.findByPk(churchId) 
-    
-    //make sure same user who created be edit
-    // let userId = req.body.userId;
-    let userFound = await ChurchUser.findByPk(userId);
-    if(!userFound || user.dataValues.userId !== user.userId){
-      return res.status(403).send("Not the same user");
-    }
-   // If the church that was requested has all of these attributes and userId is not changed, edit the church
-    if (
-         matchingChurch && 
-         matchingChurch.churchId === matchingChurch.churchId && 
-         matchingChurch.userId && 
-         matchingChurch.churchName && 
-         matchingChurch.denomination && 
-         matchingChurch.location &&
-         matchingChurch.phoneNumber && 
-         matchingChurch.churchEmail && 
-         matchingChurch.welcomeMessage && 
-         matchingChurch.serviceTime && 
-         matchingChurch.imageUrl && 
-         matchingChurch.website &&
-         matchingChurch.churchId === editChurch.userId
-         ){
-        await Church.update(matchingChurch,{where:{churchId:churchId}});
-        return res.status(200).send("church edited");
-    }
-    else {
-        res.status(400).json();
-    }
+  let churchId = req.params.id;
+  let editChurchData: Church = req.body;
+  let matchingChurch = await Church.findByPk(churchId);
+
+  // Make sure the same user who created it is editing
+  let userId = req.body.userId;
+  let userFound = await ChurchUser.findByPk(userId);
+  if (!userFound || userFound.userId !== user.userId) {
+    return res.status(403).send("Not the same user");
+  }
+
+  // If the church that was requested has all the required attributes and the user ID is not changed, edit the church
+  if (
+    matchingChurch &&
+    matchingChurch.userId &&
+    matchingChurch.churchName &&
+    matchingChurch.denomination &&
+    matchingChurch.location &&
+    matchingChurch.phoneNumber &&
+    matchingChurch.churchEmail &&
+    matchingChurch.welcomeMessage &&
+    matchingChurch.serviceTime &&
+    matchingChurch.imageUrl &&
+    matchingChurch.website &&
+    matchingChurch.userId === editChurchData.userId
+  ) {
+    await Church.update(editChurchData, { where: { churchId: churchId } });
+    return res.status(200).send("Church edited");
+  } else {
+    return res.status(400).json();
+  }
 }
+
 
 export const deleteChurch:RequestHandler = async(req,res, next) => {
   let user: ChurchUser | null = await verifyUser(req);
@@ -118,11 +118,11 @@ export const deleteChurch:RequestHandler = async(req,res, next) => {
     
     let churchId = req.params.id;
     let churchFound = await Church.findByPk(churchId);
-    //make sure same user who created be edit
-    // let userId = req.body.userId;
-    // let userFound = await ChurchUser.findByPk(userId);
-    // if(!userFound || user.dataValues.userId !== user.userId){
-    //   return res.status(403).send("Not the same user");
+    // make sure same user who created be edit
+    let userId = req.body.userId;
+    let userFound = await ChurchUser.findByPk(churchFound?.userId);
+    if(!userFound || userFound.dataValues.userId !== user.userId){
+      return res.status(403).send("Not the same user");
     }
 
     if (churchFound){
