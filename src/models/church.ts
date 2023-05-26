@@ -15,10 +15,12 @@ export class Church extends Model<
   declare userId: number;
   declare churchName: string;
   declare denomination: string;
-  declare street: string;
-  declare city: string;
-  declare state: string;
-  declare zip: string;
+  declare location:{
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  }
   declare phoneNumber: string;
   declare churchEmail: string;
   declare welcomeMessage: string;
@@ -50,19 +52,7 @@ export function ChurchFactory(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      street: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      city: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      state: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      zip: {
+      location:{
         type: DataTypes.STRING,
         allowNull: false,
       },

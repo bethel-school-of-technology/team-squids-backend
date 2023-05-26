@@ -15,10 +15,12 @@ export class Event extends Model<
   declare churchId: number;
   declare eventTitle: string;
   declare eventDate: Date;
-  declare eventStreet: string;
-  declare eventCity: string;
-  declare eventState: string;
-  declare eventZip: string;
+  declare location:{
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  }
   declare eventType:
     | "Family"
     | "Youth"
@@ -57,26 +59,10 @@ export function EventFactory(sequelize: Sequelize) {
         type: DataTypes.DATE,
         allowNull: false,
       },
-      eventStreet: {
+      location:{
         type: DataTypes.STRING,
         allowNull: false,
       },
-
-      eventCity: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
-      eventState: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
-      eventZip: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
       eventType: {
         type: DataTypes.STRING,
         validate: {
