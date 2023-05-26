@@ -94,6 +94,7 @@ export const createEvent: RequestHandler = async (req, res, next) => {
         if (
             newEvent.churchId,
             newEvent.eventTitle,
+            newEvent.location,
             newEvent.eventDate,
             newEvent.eventStreet,
             newEvent.eventCity,
@@ -145,6 +146,7 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
         matchingEvent &&
         matchingEvent.eventId == eventIdNum &&
         editedEvent.eventTitle &&
+        editedEvent.location &&
         editedEvent.eventStreet &&
         editedEvent.description &&
         editedEvent.eventDate &&
