@@ -21,10 +21,6 @@ export class Event extends Model<
     state: string;
     zip: string;
   }
-  declare eventStreet: string;
-  declare eventCity: string;
-  declare eventState: string;
-  declare eventZip: string;
   declare eventType:
     | "Family"
     | "Youth"
@@ -67,26 +63,6 @@ export function EventFactory(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      eventStreet: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
-      eventCity: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
-      eventState: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
-      eventZip: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
       eventType: {
         type: DataTypes.STRING,
         validate: {

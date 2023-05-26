@@ -21,10 +21,6 @@ export class Church extends Model<
     state: string;
     zip: string;
   }
-  declare street: string;
-  declare city: string;
-  declare state: string;
-  declare zip: string;
   declare phoneNumber: string;
   declare churchEmail: string;
   declare welcomeMessage: string;
@@ -57,22 +53,6 @@ export function ChurchFactory(sequelize: Sequelize) {
         allowNull: false,
       },
       location:{
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      street: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      city: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      state: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      zip: {
         type: DataTypes.STRING,
         allowNull: false,
       },

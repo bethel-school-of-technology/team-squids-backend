@@ -96,10 +96,6 @@ export const createEvent: RequestHandler = async (req, res, next) => {
             newEvent.eventTitle,
             newEvent.location,
             newEvent.eventDate,
-            newEvent.eventStreet,
-            newEvent.eventCity,
-            newEvent.eventState,
-            newEvent.eventZip,
             newEvent.eventType,
             newEvent.description
         ) {
@@ -147,13 +143,9 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
         matchingEvent.eventId == eventIdNum &&
         editedEvent.eventTitle &&
         editedEvent.location &&
-        editedEvent.eventStreet &&
         editedEvent.description &&
         editedEvent.eventDate &&
         editedEvent.eventType &&
-        editedEvent.eventCity &&
-        editedEvent.eventState &&
-        editedEvent.eventZip &&
         matchingEvent.churchId === editedEvent.churchId // Ensure the churchId is not changed
     ) {
         await Event.update(editedEvent, { where: { eventId: eventIdNum } });
