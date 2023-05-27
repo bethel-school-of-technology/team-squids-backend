@@ -81,7 +81,7 @@ export const editChurch: RequestHandler = async (req, res, next) =>{
     let matchingChurch = await Church.findByPk(churchId) 
     
     //make sure same user who created be edit
-    // let userId = req.body.userId;
+    let userId = req.body.userId;
     let userFound = await ChurchUser.findByPk(userId);
     if(!userFound || user.dataValues.userId !== user.userId){
       return res.status(403).send("Not the same user");
@@ -119,10 +119,10 @@ export const deleteChurch:RequestHandler = async(req,res, next) => {
     let churchId = req.params.id;
     let churchFound = await Church.findByPk(churchId);
     //make sure same user who created be edit
-    // let userId = req.body.userId;
-    // let userFound = await ChurchUser.findByPk(userId);
-    // if(!userFound || user.dataValues.userId !== user.userId){
-    //   return res.status(403).send("Not the same user");
+    let userId = req.body.userId;
+    let userFound = await ChurchUser.findByPk(userId);
+    if(!userFound || user.dataValues.userId !== user.userId){
+      return res.status(403).send("Not the same user");
     }
 
     if (churchFound){

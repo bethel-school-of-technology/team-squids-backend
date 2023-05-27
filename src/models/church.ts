@@ -9,8 +9,7 @@ import { ChurchUser } from "./churchUser";
 
 export class Church extends Model<
   InferAttributes<Church>,
-  InferCreationAttributes<Church>
-> {
+  InferCreationAttributes<Church>> {
   declare churchId: number;
   declare userId: number;
   declare churchName: string;
@@ -21,6 +20,10 @@ export class Church extends Model<
     state: string;
     zip: string;
   }
+  // declare street: string;
+  // declare city: string;
+  // declare state: string;
+  // declare zip: string;
   declare phoneNumber: string;
   declare churchEmail: string;
   declare welcomeMessage: string;
@@ -56,6 +59,22 @@ export function ChurchFactory(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      // street:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // city:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // state:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // zip:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
       phoneNumber: {
         type: DataTypes.STRING,
         allowNull: false,
