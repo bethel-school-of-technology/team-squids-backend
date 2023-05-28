@@ -7,6 +7,13 @@ import {
 } from "sequelize";
 import { ChurchUser } from "./churchUser";
 
+export interface Location {
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
 export class Church extends Model<
   InferAttributes<Church>,
   InferCreationAttributes<Church>
@@ -15,12 +22,7 @@ export class Church extends Model<
   declare userId: number;
   declare churchName: string;
   declare denomination: string;
-  declare location:{
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-  }
+  declare location: Location | string;
   declare phoneNumber: string;
   declare churchEmail: string;
   declare welcomeMessage: string;
@@ -30,6 +32,7 @@ export class Church extends Model<
   declare createdAt?: Date;
   declare updatedAt?: Date;
 }
+
 export function ChurchFactory(sequelize: Sequelize) {
   Church.init(
     {
@@ -53,7 +56,7 @@ export function ChurchFactory(sequelize: Sequelize) {
         allowNull: false,
       },
       location:{
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       phoneNumber: {
@@ -103,4 +106,3 @@ export function AssociateUserChurch() {
   ChurchUser.hasMany(Church, { foreignKey: "userId" });
   Church.belongsTo(ChurchUser, { foreignKey: "userId" });
 }
-
