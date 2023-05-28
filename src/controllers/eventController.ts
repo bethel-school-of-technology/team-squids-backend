@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-import { request } from "http";
 import { verifyUser } from "../services/authService";
 import { Event } from "../models/event";
 import { Church } from "../models/church";

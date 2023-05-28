@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { Church } from "../models/church";
 import { RequestHandler } from "express";
-import { searchChurch} from "../utilities/dbUtils"
+
 
 
 // export const dbAddressSearch: RequestHandler = async ( req, res, next ) => {
@@ -41,37 +41,80 @@ import { searchChurch} from "../utilities/dbUtils"
 
 // export const searchDatabase: RequestHandler = async (req, res, next) => {
 
-//     const location = req.query.location as string;
-//     console.log(location)
+//     // const location = req.query.location as string;
+//     // console.log(location)
+//     let query = req.params.query;
+
 //     try {
 //         const resultsDB = await Church.findAll({
 //             where: {
 //                 location: {
 //                     street: {
-//                         [Op.like]: `%${location}%`
+//                         [Op.like]: `%${query}%`
 //                     },
 //                     city: {
-//                         [Op.like]: `%${location}%`
+//                         [Op.like]: `%${query}%`
 //                     },
 //                     state: {
-//                         [Op.like]: `%${location}%`
+//                         [Op.like]: `%${query}%`
 //                     },
 //                     zip: {
-//                         [Op.like]: `%${location}%`
+//                         [Op.like]: `%${query}%`
 //                     }
 //                 }
 //             }
 //         });
 
 //         res.status(200).json(resultsDB);
-
+//         console.log(resultsDB)
 //     } catch (err) {
 //         res.status(404).json({ error: 'Database search query failed' });
 //     }
 // };
 
+// Simiple search function 
+export const searchDatabase: RequestHandler = async (req, res, next) => {
+  let query = req.params.query;
 
+  try {
+    const resultsDB = await Church.findAll({
+      where: {
+        [Op.or]: [
+          { 'location.street': { [Op.like]: `%${query}%` } },
+          { 'location.city': { [Op.like]: `%${query}%` } },
+          { 'location.state': { [Op.like]: `%${query}%` } },
+          { 'location.zip': { [Op.like]: `%${query}%` } }
+        // location: {
+        //                     street: {
+        //                         [Op.like]: `%${location}%`
+        //                     },
+        //                     city: {
+        //                         [Op.like]: `%${location}%`
+        //                     },
+        //                     state: {
+        //                         [Op.like]: `%${location}%`
+        //                     },
+        //                     zip: {
+        //                         [Op.like]: `%${location}%`
+        //                     }
+        // }
+        ]
+      }
+    });
 
+    res.status(200).json(resultsDB);
+    console.log(resultsDB);
+  } catch (err) {
+    res.status(404).json({ error: 'Database search query failed' });
+  }
+};
+
+  
+ 
+  
+  
+  
+  
 
 // export const searchDatabase: RequestHandler = async (req, res, next) => {
 //   let searchQ = req.query.location as string;
@@ -117,24 +160,24 @@ import { searchChurch} from "../utilities/dbUtils"
 //     return churches;
 // }
 
-export const searchDatabase: RequestHandler = async (req, res, next) => {
-    const { street, city, state, zip } = req.query;
+// export const searchDatabase: RequestHandler = async (req, res, next) => {
+//     const { street, city, state, zip } = req.query;
 
-console.log(street, city, state, zip)
-    try {
-        const searchParams = {
-            street: street as string,
-            city: city as string,
-            state: state as string,
-            zip: zip as string,
-        };
+//     try {
+//         const searchParams = {
+//             street: street as string,
+//             city: city as string,
+//             state: state as string,
+//             zip: zip as string,
+//         };
 
-        const churches = await searchChurch(searchParams);
-        res.status(200).json(churches);
-    } catch (err) {
-        res.status(500).json({ error: 'Database search query failed' });
-    }
-}
+//         const churches = await searchChurch(searchParams);
+//         console.log(churches)
+//         res.status(200).json(churches);
+//     } catch (err) {
+//         res.status(500).json({ error: 'Database search query failed' });
+//     }
+// }
 
 
 

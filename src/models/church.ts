@@ -7,6 +7,14 @@ import {
 } from "sequelize";
 import { ChurchUser } from "./churchUser";
 
+
+interface Location {
+  street: string;
+    city: string;
+    state: string;
+    zip: string;
+}
+
 export class Church extends Model<
   InferAttributes<Church>,
   InferCreationAttributes<Church>> {
@@ -14,12 +22,7 @@ export class Church extends Model<
   declare userId: number;
   declare churchName: string;
   declare denomination: string;
-  declare location:{
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-  }
+  declare location: Location;
   // declare street: string;
   // declare city: string;
   // declare state: string;
@@ -56,7 +59,7 @@ export function ChurchFactory(sequelize: Sequelize) {
         allowNull: false,
       },
       location:{
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       // street:{

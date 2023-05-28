@@ -7,6 +7,13 @@ import {
 } from "sequelize";
 import { Church } from "./church";
 
+interface Location {
+  street: string;
+    city: string;
+    state: string;
+    zip: string;
+}
+
 export class Event extends Model<
   InferAttributes<Event>,
   InferCreationAttributes<Event>
@@ -15,12 +22,7 @@ export class Event extends Model<
   declare churchId: number;
   declare eventTitle: string;
   declare eventDate: Date;
-  declare location:{
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-  }
+  declare location: Location
   declare eventType:
     | "Family"
     | "Youth"
@@ -60,7 +62,7 @@ export function EventFactory(sequelize: Sequelize) {
         allowNull: false,
       },
       location:{
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       eventType: {
