@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-import { request } from "http";
 import { verifyUser } from "../services/authService";
 import { Event } from "../models/event";
 import { Church } from "../models/church";
@@ -7,176 +6,310 @@ import { ChurchUser } from "../models/churchUser";
 import { Op } from "sequelize";
 
 export const getAllEvents: RequestHandler = async (req, res, next) => {
-    //Basic return of all events
-    let EventsInDB: Event[] = await Event.findAll({
-        include: [
-            {
-              model: Church,
-              include: [
-                {
-                  model: ChurchUser
-                }
-              ]
-            }
-          ]
+  // try {
+  //   const events = await Event.findAll({
+  //     include: [
+  //       {
+  //         model: Church,
+  //         include: [ChurchUser],
+  //       },
+  //     ],
+  //   });
+  //   res.json(events);
+  // } catch (error: any) {
+  //   res.status(500).json({ error: error.message });
+  // }
+
+  try {
+    let events: Event[] = await Event.findAll({
+      include: [
+        {
+          model: Church,
+          include: [ChurchUser],
+        },
+      ],
     });
-    res.json(EventsInDB)
-}
+
+    // Parse location string for each church
+    events = events.map((event) => {
+      if (typeof event.location === "string") {
+        event.location = JSON.parse(event.location);
+      }
+      return event;
+    });
+
+    res.json(events);
+  } catch (error: any) {
+    res
+      .status(500)
+      .send(error.message || "Some error occurred while retrieving events.");
+  }
+};
 
 export const getEvent: RequestHandler = async (req, res, next) => {
-    let eventId = req.params.eventId
+  // try {
+  //   const eventId = req.params.eventId;
+  //   const event = await Event.findByPk(eventId, {
+  //     include: [
+  //       {
+  //         model: Church,
+  //         include: [ChurchUser],
+  //       },
+  //     ],
+  //   });
 
-    let foundEvent = await Event.findByPk(eventId, {
-        include: [
-            {
-                model: Church,
-                include: [
-                    {
-                      model: Event,
-                      where: {
-                        eventDate: {
-                          [Op.gte]: Date.now()
-                        }
-                      }
-                    },
-                    {
-                        model: ChurchUser
-                    }
-                ]
-            }   
-        ]
-    })
+  //   if (event) {
+  //     res.json(event);
+  //   } else {
+  //     res.status(404).json({ error: "Event not found" });
+  //   }
+  // } catch (error: any) {
+  //   res.status(500).json({ error: error.message });
+  // }
 
-    //Finding if the requested event object exists, then sending it
-    if (foundEvent) {
-        res.status(200).json(foundEvent);
-    } else {
-        res.status(404).json();
+  try {
+    const eventId = req.params.eventId;
+
+    let event = await Event.findByPk(eventId, {
+      include: [
+        {
+          model: Church,
+          include: [ChurchUser],
+          required: false, // Make this relation optional
+        },
+      ],
+    });
+
+    if (!event) {
+      return res.status(404).send("Error: Event not found");
     }
-}
+
+    if (typeof event.location === "string") {
+      event.location = JSON.parse(event.location);
+    }
+
+    res.status(200).json(event);
+  } catch (error: any) {
+    res
+      .status(500)
+      .send(error.message || "Some error occurred while retrieving the Event.");
+  }
+};
 
 export const getTenEvents: RequestHandler = async (req, res, next) => {
-    //searching for events and returning 10
+  // try {
+  //   const eventId = req.params.eventId;
+  //   const event = await Event.findByPk(eventId, {
+  //     limit: 10,
+  //     offset: 0,
+  //     include: [
+  //       {
+  //         model: Church,
+  //         include: [ChurchUser],
+  //       },
+  //     ],
+  //   });
 
-    //Getting this allows us to search
-    const { Op } = require('sequelize');
+  //   if (event) {
+  //     res.json(event);
+  //   } else {
+  //     res.status(404).json({ error: "Event not found" });
+  //   }
+  // } catch (error: any) {
+  //   res.status(500).json({ error: error.message });
+  // }
 
-    //converts the query to string so we can use it to search
-    let query = req.params.query.toString()
+  try {
+    let events: Event[] = await Event.findAll({
+      limit: 10,
+      offset: 0,
+      include: [
+        {
+          model: Church,
+          include: [ChurchUser],
+        },
+      ],
+    });
 
-    //Searching all event objects with matching parameters
-    let foundEvents = await Event.findAll({
-        limit: 10,
-        offset: 0,
-        //This is the part where it is comparing \/
-        where: {
-            [Op.or]: [
-                { eventTitle: { [Op.like]: `%${query}%` } },
-                { eventAddress: { [Op.like]: `%${query}%` } },
-                { org: { [Op.like]: `%${query}%` } }
-            ]
-        }
-    })
-    if (foundEvents) {
-        res.status(200).json(foundEvents);
-    } else {
-        res.status(404).json();
-    }
-}
+    // Parse location string for each church
+    events = events.map((event) => {
+      if (typeof event.location === "string") {
+        event.location = JSON.parse(event.location);
+      }
+      return event;
+    });
+
+    res.json(events);
+  } catch (error: any) {
+    res
+      .status(500)
+      .send(error.message || "Some error occurred while retrieving events.");
+  }
+};
 
 export const createEvent: RequestHandler = async (req, res, next) => {
+  // try {
+  //   const user: ChurchUser | null = await verifyUser(req);
+  //   if (!user) {
+  //     return res.status(403).send();
+  //   }
+
+  //   const newEvent: Event = req.body;
+  //   const church: Church | null = await Church.findByPk(newEvent.churchId);
+  //   if (!church) {
+  //     return res.status(400).json({ error: "Invalid church ID" });
+  //   }
+
+  //   if (church.userId !== user.userId) {
+  //     return res.status(401).send("Not authorized");
+  //   }
+
+  //   const createdEvent = await Event.create(newEvent);
+  //   res.status(201).json(createdEvent);
+  // } catch (error: any) {
+  //   res.status(500).json({ error: error.message });
+  // }
+  try {
     let user: ChurchUser | null = await verifyUser(req);
     if (!user) {
-        return res.status(403).send();
+      return res.status(403).send();
     }
 
-        let newEvent: Event = req.body;
-        if (
-            newEvent.churchId,
-            newEvent.eventTitle,
-            newEvent.location,
-            newEvent.eventDate,
-            newEvent.eventType,
-            newEvent.description
-        ) {
-            let church: Church | null = await Church.findByPk(newEvent.churchId)
-            if (church === null) {
-                return res.status(400).send()
-            }
+    const newEvent: Event = req.body;
 
-            if (user.dataValues.userId != church.userId) {
-                return res.status(401).send("Not the same user")
-            }
+    const church: Church | null = await Church.findByPk(newEvent.churchId);
 
-            let created = await Event.create(newEvent);
-            if (created) {
-                return res.status(200).json(created);
-            }
+    if (!church) {
+      return res.status(400).json({ error: "Invalid church ID" });
+    }
 
-            return res.status(400).json("error");
-        } 
-        else {
-            return res.status(400).send("Data is of the wrong format");
-        }
-}
+    if (church.userId !== user.userId) {
+      return res.status(401).send("Not authorized");
+    }
+
+    if (typeof newEvent.location !== "string") {
+      newEvent.location = JSON.stringify(newEvent.location);
+    }
+
+    if (
+      newEvent.eventTitle &&
+      newEvent.date &&
+      newEvent.location &&
+      newEvent.eventType &&
+      newEvent.description &&
+      newEvent.imageUrl
+    ) {
+      let created = await Event.create(newEvent);
+
+      // If location is a string, parse it
+      if (typeof created.location === "string") {
+        created.location = JSON.parse(created.location);
+      }
+
+      res.status(201).json(created);
+    } else {
+      res.status(400).send();
+    }
+  } catch (error: any) {
+    res
+      .status(500)
+      .send(error.message || "Some error occurred while creating the Event.");
+  }
+};
 
 export const updateEvent: RequestHandler = async (req, res, next) => {
+  // try {
+  //   const user: ChurchUser | null = await verifyUser(req);
+  //   if (!user) {
+  //     return res.status(403).send();
+  //   }
+
+  //   const eventId: number = parseInt(req.params.eventId);
+  //   const updatedEvent: Event = req.body;
+  //   const event: Event | null = await Event.findByPk(eventId);
+
+  //   if (!event) {
+  //     return res.status(404).json({ error: "Event not found" });
+  //   }
+
+  //   const church: Church | null = await Church.findByPk(event.churchId);
+  //   if (!church || church.userId !== user.userId) {
+  //     return res.status(401).send("Not authorized");
+  //   }
+
+  //   await Event.update(updatedEvent, { where: { eventId: eventId } });
+  //   const updated = await Event.findByPk(eventId);
+  //   res.json(updated);
+  // } catch (error: any) {
+  //   res.status(500).json({ error: error.message });
+  // }
+
+  try {
     let user: ChurchUser | null = await verifyUser(req);
     if (!user) {
-        return res.status(403).send();
+      return res.status(403).send();
     }
 
-    let eventIdNum = parseInt(req.params.eventId);
-    let editedEvent: Event = req.body;
-    let matchingEvent = await Event.findByPk(eventIdNum);
+    let eventId = req.params.id;
+    let editEventData: Event = req.body;
 
-    //Is the account the same one that created the church? If so continue
-    let churchId = req.body.churchId;
-    let church = await Church.findByPk(churchId);
-    if (!church || church.dataValues.userId !== user.userId) {
-        return res.status(403).send("Not the same user");
+    // If location is an object, stringify it
+    if (typeof editEventData.location !== "string") {
+      editEventData.location = JSON.stringify(editEventData.location);
     }
 
-    // If the event that was requested has all of these attributes and the churchId is not changed, edit the event
+    let matchingEvent = await Event.findByPk(eventId);
+
+    // Make sure the same user who created it is editing
+    let userId = req.body.userId;
+    let userFound = await ChurchUser.findByPk(userId);
+    if (!userFound || userFound.userId !== user.userId) {
+      return res.status(403).send("Not the same user");
+    }
+
     if (
-        matchingEvent &&
-        matchingEvent.eventId == eventIdNum &&
-        editedEvent.eventTitle &&
-        editedEvent.location &&
-        editedEvent.description &&
-        editedEvent.eventDate &&
-        editedEvent.eventType &&
-        matchingEvent.churchId === editedEvent.churchId // Ensure the churchId is not changed
+      matchingEvent &&
+      matchingEvent.eventTitle &&
+      matchingEvent.date &&
+      matchingEvent.location &&
+      matchingEvent.eventType &&
+      matchingEvent.description &&
+      matchingEvent.imageUrl
     ) {
-        await Event.update(editedEvent, { where: { eventId: eventIdNum } });
-        return res.status(200).send("Event edited");
+      await Event.update(editEventData, { where: { eventId: eventId } });
+      return res.status(200).send("Event edited");
     } else {
-        return res.status(400).send("Not enough data");
+      return res.status(400).json();
     }
+  } catch (error: any) {
+    res
+      .status(500)
+      .send(error.message || "Some error occurred while editing the Event.");
+  }
 };
 
 export const deleteEvent: RequestHandler = async (req, res, next) => {
-    let user: ChurchUser | null = await verifyUser(req);
+  try {
+    const user: ChurchUser | null = await verifyUser(req);
     if (!user) {
-        return res.status(403).send();
+      return res.status(403).send();
     }
 
-    let eventId = req.params.eventId;
-    let foundEvent = await Event.findByPk(eventId);
+    const eventId: number = parseInt(req.params.eventId);
+    const event: Event | null = await Event.findByPk(eventId);
 
-    //Is the account the same one that created the church? If so continue
-    let church = await Church.findByPk(foundEvent?.churchId);
-    if (!church || church.dataValues.userId !== user.userId) {
-        return res.status(403).send("Not the same user");
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
     }
 
-    //if the user is verified and the event is found, delete it
-    if (foundEvent) {
-        await Event.destroy({
-            where: { eventId: eventId }
-        });
-        res.status(200).json();
-    } else {
-        res.status(404).json();
+    const church: Church | null = await Church.findByPk(event.churchId);
+    if (!church || church.userId !== user.userId) {
+      return res.status(401).send("Not authorized");
     }
-}
+
+    await Event.destroy({ where: { eventId: eventId } });
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
