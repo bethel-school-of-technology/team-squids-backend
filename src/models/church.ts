@@ -7,12 +7,11 @@ import {
 } from "sequelize";
 import { ChurchUser } from "./churchUser";
 
-
-interface Location {
+export interface Location {
   street: string;
-    city: string;
-    state: string;
-    zip: string;
+  city: string;
+  state: string;
+  zip: string;
 }
 
 export class Church extends Model<
@@ -22,11 +21,7 @@ export class Church extends Model<
   declare userId: number;
   declare churchName: string;
   declare denomination: string;
-  declare location: Location;
-  // declare street: string;
-  // declare city: string;
-  // declare state: string;
-  // declare zip: string;
+  declare location: Location | string;
   declare phoneNumber: string;
   declare churchEmail: string;
   declare welcomeMessage: string;
@@ -36,6 +31,7 @@ export class Church extends Model<
   declare createdAt?: Date;
   declare updatedAt?: Date;
 }
+
 export function ChurchFactory(sequelize: Sequelize) {
   Church.init(
     {
@@ -125,4 +121,3 @@ export function AssociateUserChurch() {
   ChurchUser.hasMany(Church, { foreignKey: "userId" });
   Church.belongsTo(ChurchUser, { foreignKey: "userId" });
 }
-
