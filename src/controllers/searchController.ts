@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { Church } from "../models/church";
 import { RequestHandler } from "express";
 
@@ -74,7 +74,15 @@ import { RequestHandler } from "express";
 
 // Simiple search function 
 export const searchDatabase: RequestHandler = async (req, res, next) => {
-  let query = req.params.query;
+  // Convert the search query to lowercase
+  let query = req.params.query.toLowerCase();
+ // Minimum length of the search query
+ const minimumQueryLength = 3;
+ // Check if the query has fewer characters than the minimum length
+ if (query.length < minimumQueryLength) {
+  return res.status(400).json({ error: 'Search query must have at least 3 characters' });
+}
+
 
   try {
     let resultsDB = await Church.findAll({
@@ -84,8 +92,10 @@ export const searchDatabase: RequestHandler = async (req, res, next) => {
       //     // { 'location.city': { [Op.like]: `%${query}%` } },
       //     // { 'location.state': { [Op.like]: `%${query}%` } },
       //     // { 'location.zip': { [Op.like]: `%${query}%` } }
-          { 'location': { [Op.like]: `%${query}%` } },
-          { 'churchName': { [Op.like]: `%${query}%` } }
+          // { 'location': { [Op.like]: `%${query}%` } },
+          // { 'churchName': { [Op.like]: `%${query}%` } }
+          Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('location')), 'LIKE', `%${query.toLowerCase()}%`),
+          Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('churchName')), 'LIKE', `%${query.toLowerCase()}%`)
 
           // Sequelize.fn('lower', Sequelize.col('location'))
       
