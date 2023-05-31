@@ -16,8 +16,7 @@ export interface Location {
 
 export class Church extends Model<
   InferAttributes<Church>,
-  InferCreationAttributes<Church>
-> {
+  InferCreationAttributes<Church>> {
   declare churchId: number;
   declare userId: number;
   declare churchName: string;
@@ -59,6 +58,22 @@ export function ChurchFactory(sequelize: Sequelize) {
         type: DataTypes.JSON,
         allowNull: false,
       },
+      // street:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // city:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // state:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // zip:{
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
       phoneNumber: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -98,6 +113,7 @@ export function ChurchFactory(sequelize: Sequelize) {
       tableName: "church",
       freezeTableName: true,
       sequelize,
+      collate: 'utf8_general_ci',
     }
   );
 }

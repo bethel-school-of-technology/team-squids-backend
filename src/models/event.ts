@@ -99,6 +99,7 @@ export function EventFactory(sequelize: Sequelize) {
       freezeTableName: true,
       tableName: "events",
       sequelize,
+      collate: 'utf8_general_ci',
     }
   );
 }
