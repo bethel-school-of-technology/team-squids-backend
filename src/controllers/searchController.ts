@@ -77,29 +77,30 @@ export const searchDatabase: RequestHandler = async (req, res, next) => {
   let query = req.params.query;
 
   try {
-    const resultsDB = await Church.findAll({
+    let resultsDB = await Church.findAll({
       where: {
         [Op.or]: [
-          { 'location.street': { [Op.like]: `%${query}%` } },
-          { 'location.city': { [Op.like]: `%${query}%` } },
-          { 'location.state': { [Op.like]: `%${query}%` } },
-          { 'location.zip': { [Op.like]: `%${query}%` } }
-        // location: {
-        //                     street: {
-        //                         [Op.like]: `%${location}%`
-        //                     },
-        //                     city: {
-        //                         [Op.like]: `%${location}%`
-        //                     },
-        //                     state: {
-        //                         [Op.like]: `%${location}%`
-        //                     },
-        //                     zip: {
-        //                         [Op.like]: `%${location}%`
-        //                     }
-        // }
+      //     // { 'location.street': { [Op.like]: `%${query}%` } },
+      //     // { 'location.city': { [Op.like]: `%${query}%` } },
+      //     // { 'location.state': { [Op.like]: `%${query}%` } },
+      //     // { 'location.zip': { [Op.like]: `%${query}%` } }
+          { 'location': { [Op.like]: `%${query}%` } },
+          { 'churchName': { [Op.like]: `%${query}%` } }
+
+          // Sequelize.fn('lower', Sequelize.col('location'))
+      
         ]
       }
+      
+      
+     
+    });
+
+    resultsDB = resultsDB.map((church) => {
+      if (typeof church.location === "string") {
+        church.location = JSON.parse(church.location);
+      }
+      return church;
     });
 
     res.status(200).json(resultsDB);

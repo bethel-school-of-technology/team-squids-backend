@@ -30,7 +30,8 @@ export function ChurchUserFactory( sequelize: Sequelize ) {
     },{
         freezeTableName: true,
         tableName: 'churchUser',
-        sequelize
+        sequelize,
+        collate: 'utf8_general_ci',
     })
 }
 

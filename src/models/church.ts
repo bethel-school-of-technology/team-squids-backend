@@ -113,6 +113,7 @@ export function ChurchFactory(sequelize: Sequelize) {
       tableName: "church",
       freezeTableName: true,
       sequelize,
+      collate: 'utf8_general_ci',
     }
   );
 }
