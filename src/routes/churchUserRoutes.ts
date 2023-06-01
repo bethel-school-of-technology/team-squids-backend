@@ -8,6 +8,8 @@ router.get('/', allUser);
 
 router.get('/:id', getUser);
 
+router.get('/search/:query')
+
 router.post('/create-account', createUser);
 
 router.put('/edit-account/:id', modifyUser);
