@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { Church } from "../models/church";
 import { Op } from "sequelize";
-import { loadavg } from "os";
+
 
 // export const searchDatabase: RequestHandler = async (req, res, next) => {
 
@@ -34,7 +34,7 @@ import { loadavg } from "os";
 //     }
 // };
 
-export const searchChurch = async function (location:{
+export const searchExample = async function (location:{
     street?: string;
     city?: string;
     state?: string;
