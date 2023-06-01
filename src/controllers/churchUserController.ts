@@ -19,20 +19,6 @@ export const allUser: RequestHandler = async (req, res, next) => {
 export const createUser: RequestHandler = async (req, res, next) => {
     let newUser: ChurchUser = req.body;
 
-    // if (
-
-    //   newUser.email,
-    //   newUser.password
-
-    //   ) {
-    //     let create = await ChurchUser.create(newUser);
-
-    //     res.status(201).json(create);
-    // }
-    // else {
-    //     res.status(400).send();
-    // } 
-
     if (newUser.email && newUser.password) {
         // hassPass will go here 
         let hashedPasswrod = await hashPassword(newUser.password);
@@ -77,7 +63,6 @@ export const signInUser: RequestHandler = async (req, res, next) => {
 };
 
 
-
 export const signOutUser: RequestHandler = async (req, res, next) => {
 
 
@@ -85,16 +70,7 @@ export const signOutUser: RequestHandler = async (req, res, next) => {
 
 
 export const getUser: RequestHandler = async (req, res, next) => {
-    // let user: ChurchUser | null = await verifyUser(req);
-
-    // if (user) {
-    //     let  { email } = user;
-    //     res.status(200).json({
-    //         email
-    //     });
-    // } else {
-    //     res.status(401).send();
-    // }
+    
     const currentDate = new Date().toISOString().slice(0, 10);
     let churchUser = req.params.id;
     let user = await ChurchUser.findByPk(churchUser, {
