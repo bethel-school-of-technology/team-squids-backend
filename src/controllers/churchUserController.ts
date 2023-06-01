@@ -105,7 +105,7 @@ export const getUser: RequestHandler = async (req, res, next) => {
                     {
                       model: Event,
                       where: {
-                        eventDate: {
+                        date: {
                           [Op.gte]: Date.now()
                         }
                       }
