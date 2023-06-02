@@ -58,22 +58,6 @@ export function ChurchFactory(sequelize: Sequelize) {
         type: DataTypes.JSON,
         allowNull: false,
       },
-      // street:{
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      // },
-      // city:{
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      // },
-      // state:{
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      // },
-      // zip:{
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      // },
       phoneNumber: {
         type: DataTypes.STRING,
         allowNull: false,
