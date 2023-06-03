@@ -71,7 +71,7 @@ export const signOutUser: RequestHandler = async (req, res, next) => {
 
 export const getUser: RequestHandler = async (req, res, next) => {
     
-    const currentDate = new Date().toISOString().slice(0, 10);
+    // const currentDate = new Date().toISOString().slice(0, 10);
     let churchUser = req.params.id;
     let user = await ChurchUser.findByPk(churchUser, {
         include: [
@@ -80,11 +80,12 @@ export const getUser: RequestHandler = async (req, res, next) => {
                 include: [
                     {
                       model: Event,
-                      where: {
-                        date: {
-                          [Op.gte]: Date.now()
+                      required:false,
+                        where: {
+                            date: {
+                            [Op.gte]: Date.now()
+                            }
                         }
-                      }
                     },
                     {
                         model: ChurchUser

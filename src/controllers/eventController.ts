@@ -4,6 +4,7 @@ import { Event } from "../models/event";
 import { Church } from "../models/church";
 import { ChurchUser } from "../models/churchUser";
 import { Op } from "sequelize";
+import { getUser } from "./churchUserController";
 
 export const getAllEvents: RequestHandler = async (req, res, next) => {
  
@@ -63,6 +64,35 @@ export const getEvent: RequestHandler = async (req, res, next) => {
       .send(error.message || "Some error occurred while retrieving the Event.");
   }
 };
+export const getUserEvents: RequestHandler = async (req, res, next) => {
+    
+  // const currentDate = new Date().toISOString().slice(0, 10);
+  let userId = req.params.userId;
+  let events = await Event.findAll( {
+    include: [
+      {
+        model: Church,
+        include: [ChurchUser],
+        required: true, // Make this relation optional
+        where:{
+          userId: userId}
+      },
+    ],
+  });
+  // If location is a string, parse it
+  events = events.map((event) => {
+    if (typeof event.location === "string") {
+      event.location = JSON.parse(event.location);
+    }
+    return event;
+  });
+ 
+ 
+  
+  res.status(200).json(events);
+} 
+
+
 
 export const getTenEvents: RequestHandler = async (req, res, next) => {
  
