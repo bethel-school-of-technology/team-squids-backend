@@ -110,7 +110,30 @@ export const getOneChurch: RequestHandler = async (req, res, next) => {
       .send(error.message || "Some error occurred while retrieving the Church.");
   }
 };
-
+export const getUserChurch: RequestHandler = async (req, res, next) => {
+    
+  let userId = req.params.userId;
+  let church = await Church.findAll( {
+    include: [
+      {
+        model: ChurchUser,
+        required: true,
+        where: { userId:userId}
+      }
+    ],
+  });
+  // If location is a string, parse it
+  church = church.map((church) => {
+    if (typeof church.location === "string") {
+      church.location = JSON.parse(church.location);
+    }
+    return church;
+  });
+ 
+ 
+  
+  res.status(200).json(church);
+} 
 
 export const editChurch: RequestHandler = async (req, res, next) => {
   try {
