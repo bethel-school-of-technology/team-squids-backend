@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { createChurch, deleteChurch, editChurch, getChurch, getOneChurch } from '../controllers/churchController';
+import { createChurch, deleteChurch, editChurch, getChurch, getOneChurch, getUserChurch } from '../controllers/churchController';
 import { searchChurch } from '../controllers/searchController';
 
 const router = Router();
 
 router.get('/', getChurch);
+
+router.get('/userchurch/:userId', getUserChurch)
 
 router.post('/', createChurch);
 

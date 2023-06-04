@@ -208,7 +208,8 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
       matchingEvent.location &&
       matchingEvent.eventType &&
       matchingEvent.description &&
-      matchingEvent.imageUrl
+      matchingEvent.imageUrl 
+      
     ) {
       await Event.update(editEventData, { where: { eventId: eventId } });
       return res.status(200).send("Event edited");
