@@ -7,7 +7,7 @@ import { Op } from "sequelize";
 import { getUser } from "./churchUserController";
 
 export const getAllEvents: RequestHandler = async (req, res, next) => {
- 
+
   try {
     let events: Event[] = await Event.findAll({
       include: [
@@ -35,7 +35,7 @@ export const getAllEvents: RequestHandler = async (req, res, next) => {
 };
 
 export const getEvent: RequestHandler = async (req, res, next) => {
- 
+
   try {
     const eventId = req.params.eventId;
 
@@ -65,17 +65,18 @@ export const getEvent: RequestHandler = async (req, res, next) => {
   }
 };
 export const getUserEvents: RequestHandler = async (req, res, next) => {
-    
+
   // const currentDate = new Date().toISOString().slice(0, 10);
   let userId = req.params.userId;
-  let events = await Event.findAll( {
+  let events = await Event.findAll({
     include: [
       {
         model: Church,
         include: [ChurchUser],
         required: true, // Make this relation optional
-        where:{
-          userId: userId}
+        where: {
+          userId: userId
+        }
       },
     ],
   });
@@ -86,16 +87,16 @@ export const getUserEvents: RequestHandler = async (req, res, next) => {
     }
     return event;
   });
- 
- 
-  
+
+
+
   res.status(200).json(events);
-} 
+}
 
 
 
 export const getTenEvents: RequestHandler = async (req, res, next) => {
- 
+
 
   try {
     let events: Event[] = await Event.findAll({
@@ -126,7 +127,7 @@ export const getTenEvents: RequestHandler = async (req, res, next) => {
 };
 
 export const createEvent: RequestHandler = async (req, res, next) => {
- 
+
   try {
     let user: ChurchUser | null = await verifyUser(req);
     if (!user) {
@@ -176,15 +177,13 @@ export const createEvent: RequestHandler = async (req, res, next) => {
 };
 
 export const updateEvent: RequestHandler = async (req, res, next) => {
-
-
   try {
     let user: ChurchUser | null = await verifyUser(req);
     if (!user) {
       return res.status(403).send();
     }
 
-    let eventId = req.params.id;
+    let eventId = req.params.eventId;
     let editEventData: Event = req.body;
 
     // If location is an object, stringify it
@@ -192,34 +191,47 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
       editEventData.location = JSON.stringify(editEventData.location);
     }
 
-    let matchingEvent = await Event.findByPk(eventId);
+    // let editedEvent = {
+    //   churchId: editEventData.churchId,
+    //   eventTitle: editEventData.eventTitle,
+    //   date: editEventData.date,
+    //   location: editEventData.location,
+    //   eventType: editEventData.eventType,
+    //   description: editEventData.description,
+    //   imageUrl: editEventData.imageUrl,
+    //   eventId: editEventData.eventId
+    // }
 
-    // Make sure the same user who created it is editing
-    let userId = req.body.userId;
-    let userFound = await ChurchUser.findByPk(userId);
-    if (!userFound || userFound.userId !== user.userId) {
-      return res.status(403).send("Not the same user");
+    let matchingEvent = await Event.findByPk(eventId);
+    if (!matchingEvent) {
+      res.status(401).send("Not the same church")
+    } else {
+      // Make sure the same user who created it is editing
+      let churchId = req.body.churchId;
+      if (!churchId || matchingEvent.churchId !== churchId) {
+        return res.status(403).send("Not the same user");
+      }
     }
 
     if (
-      matchingEvent &&
-      matchingEvent.eventTitle &&
-      matchingEvent.date &&
-      matchingEvent.location &&
-      matchingEvent.eventType &&
-      matchingEvent.description &&
-      matchingEvent.imageUrl
+      editEventData &&
+      editEventData.eventTitle &&
+      editEventData.date &&
+      editEventData.eventType &&
+      editEventData.description &&
+      editEventData.imageUrl &&
+      editEventData.location
     ) {
-      await Event.update(editEventData, { where: { eventId: eventId } });
-      return res.status(200).send("Event edited");
-    } else {
-      return res.status(400).json();
-    }
+  await Event.update(editEventData, { where: { eventId: eventId } });
+  return res.status(200).send("Event edited");
+} else {
+  return res.status(400).json();
+}
   } catch (error: any) {
-    res
-      .status(500)
-      .send(error.message || "Some error occurred while editing the Event.");
-  }
+  res
+    .status(500)
+    .send(error.message || "Some error occurred while editing the Event.");
+}
 };
 
 export const deleteEvent: RequestHandler = async (req, res, next) => {
