@@ -7,9 +7,6 @@ import { Event } from "../models/event";
 import { Op } from "sequelize";
 
 
-
-
-
 export const allUser: RequestHandler = async (req, res, next) => {
     let users = await ChurchUser.findAll();
     res.status(200).json(users)
@@ -63,15 +60,7 @@ export const signInUser: RequestHandler = async (req, res, next) => {
 };
 
 
-export const signOutUser: RequestHandler = async (req, res, next) => {
-
-
-}
-
-
 export const getUser: RequestHandler = async (req, res, next) => {
-    
-    // const currentDate = new Date().toISOString().slice(0, 10);
     let churchUser = req.params.id;
     let user = await ChurchUser.findByPk(churchUser, {
         include: [
@@ -130,7 +119,6 @@ export const modifyUser: RequestHandler = async (req, res, next) => {
 }
 
 
-
 export const deleteUser: RequestHandler = async (req, res, next) => {
     let user = await verifyUser(req);
 
@@ -156,5 +144,15 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
     else {
         res.status(404).json();
 
+    }
+}
+
+export const vrfyUser: RequestHandler = async (req, res, next) => {
+    let userId = parseInt(req.params.id)
+    let user = await verifyUser(req)
+    if (userId === user?.userId) {
+        res.status(200).send(true)
+    } else {
+        res.status(200).send(false)
     }
 }
