@@ -204,12 +204,12 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
 
     let matchingEvent = await Event.findByPk(eventId);
     if (!matchingEvent) {
-      res.status(401).send("Not the same church")
+        return res.status(401).send("Not the same church")
     } else {
       // Make sure the same user who created it is editing
       let churchId = req.body.churchId;
       if (!churchId || matchingEvent.churchId !== churchId) {
-        return res.status(403).send("Not the same user");
+        return res.status(401).send("Not the same user");
       }
     }
 
