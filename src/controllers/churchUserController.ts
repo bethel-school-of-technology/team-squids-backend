@@ -19,7 +19,7 @@ export const allUser: RequestHandler = async (req, res, next) => {
 export const createUser: RequestHandler = async (req, res, next) => {
     let newUser: ChurchUser = req.body;
 
-    if (newUser.email && newUser.password) {
+    if (newUser.email && newUser.password && newUser.firstName && newUser.lastName) {
         // hassPass will go here 
         let hashedPasswrod = await hashPassword(newUser.password);
         newUser.password = hashedPasswrod;
@@ -31,7 +31,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
         });
 
     } else {
-        res.status(400).send('Email and password required.')
+        res.status(400).send('email, password, firstName and lastName are required.')
     }
 }
 
