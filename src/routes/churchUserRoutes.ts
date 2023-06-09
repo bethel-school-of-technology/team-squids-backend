@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { allUser, createUser, getUser,
- signInUser, signOutUser, modifyUser,deleteUser } from '../controllers/churchUserController';
+ signInUser, signOutUser, modifyUser,deleteUser, verifyCurrentUser } from '../controllers/churchUserController';
 
 const router = Router();
 
@@ -19,6 +19,8 @@ router.post('/signin', signInUser);
 router.post('/signout', signOutUser);
 
 router.delete('/delete-account/:id', deleteUser);
+
+router.get("/verify-current-user", verifyCurrentUser);
 
 
 export default router; 

@@ -44,3 +44,12 @@ export const verifyUser = async (req: Request) => {
       return null;
   }
 }
+
+export const verifyToken = async (token: string) => {
+  try {
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY || 'default_secret_key');
+    return decoded;
+  } catch (err) {
+    return null;
+  }
+};
