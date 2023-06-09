@@ -97,7 +97,6 @@ export const modifyUser: RequestHandler = async (req, res, next) => {
 
     let userId = parseInt(req.params.id);
     newUser.userId = userId
-    newUser.password = await hashPassword(newUser.password)
 
     //Is the user making the edit the same user editing themselves? if yes continue
     if (user.userId != userId) {
@@ -108,6 +107,13 @@ export const modifyUser: RequestHandler = async (req, res, next) => {
     if (!foundUser) {
         return res.status(404).send();
     }
+
+    if ( newUser.password) {
+        newUser.password = await hashPassword(newUser.password)
+    } else {
+        newUser.password = foundUser.password;
+    }
+
     if (foundUser.dataValues.userId === parseInt(newUser.userId)) {
         await ChurchUser.update(newUser, { where: { userId } });
         res.status(200).json();

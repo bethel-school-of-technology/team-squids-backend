@@ -51,24 +51,25 @@ export const searchEvent: RequestHandler = async (req, res, next) => {
   }
   try {
     let resultsDB = await Event.findAll({
-      // include: [{
-      //   model:Church,
-      //   where: {
-      //     churchName:{ [Op.like]: `%${query}%` }
-      //     // Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('churchName')), 'LIKE', `%${query.toLowerCase()}%`)
-      //   }
-      // }],
+      include: [{
+        model:Church
+        // where: {
+        //   churchName:{ [Op.like]: `%${query}%` }
+          // Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('churchName')), 'LIKE', `%${query.toLowerCase()}%`)
+        // }
+      }],
       where: {
         [Op.or]: [
-          Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('location')), 'LIKE', `%${query.toLowerCase()}%`),
+          Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('Event.location')), 'LIKE', `%${query.toLowerCase()}%`),
           Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('eventType')), 'LIKE', `%${query.toLowerCase()}%`),
+          Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('churchName')), 'LIKE', `%${query.toLowerCase()}%`),
          
           //  Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('date')), 'LIKE', `%${query.toLowerCase()}%`),
 
         ]
       },
       
-
+    
     });
 
     resultsDB = resultsDB.map((event) => {
@@ -87,7 +88,7 @@ export const searchEvent: RequestHandler = async (req, res, next) => {
     res.status(200).json(resultsDB);
     console.log(resultsDB);
   } catch (err) {
-    res.status(404).json({ error: 'Database search query failed' });
+    res.status(500).json(err);
   }
 };
 
