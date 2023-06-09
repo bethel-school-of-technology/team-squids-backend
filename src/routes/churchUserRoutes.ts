@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { allUser, createUser, getUser,
 
- signInUser, signOutUser, modifyUser,deleteUser, verifyCurrentUser } from '../controllers/churchUserController';
+ signInUser, modifyUser,deleteUser, verifyCurrentUser, vrfyUser } from '../controllers/churchUserController';
 
 const router = Router();
 
