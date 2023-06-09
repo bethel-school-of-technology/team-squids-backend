@@ -157,6 +157,15 @@ export const verifyCurrentUser: RequestHandler = async (req, res) => {
       }
     }
   }
-
   return res.status(401).json("Invalid token or user not found");
 };
+
+export const vrfyUser: RequestHandler = async (req, res, next) => {
+    let userId = parseInt(req.params.id)
+    let user = await verifyUser(req)
+    if (userId === user?.userId) {
+        res.status(200).send(true)
+    } else {
+        res.status(200).send(false)
+    }
+}
