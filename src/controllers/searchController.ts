@@ -40,6 +40,7 @@ export const searchChurch: RequestHandler = async (req, res, next) => {
   }
 };
 
+
 export const searchEvent: RequestHandler = async (req, res, next) => {
   // Convert the search query to lowercase
   let query = req.params.query.toLowerCase();
@@ -53,17 +54,12 @@ export const searchEvent: RequestHandler = async (req, res, next) => {
     let resultsDB = await Event.findAll({
       include: [{
         model:Church
-        // where: {
-        //   churchName:{ [Op.like]: `%${query}%` }
-          // Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('churchName')), 'LIKE', `%${query.toLowerCase()}%`)
-        // }
       }],
       where: {
         [Op.or]: [
           Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('Event.location')), 'LIKE', `%${query.toLowerCase()}%`),
           Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('eventType')), 'LIKE', `%${query.toLowerCase()}%`),
           Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('churchName')), 'LIKE', `%${query.toLowerCase()}%`),
-         
           //  Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('date')), 'LIKE', `%${query.toLowerCase()}%`),
 
         ]
@@ -73,15 +69,9 @@ export const searchEvent: RequestHandler = async (req, res, next) => {
     });
 
     resultsDB = resultsDB.map((event) => {
-      // if (event.Church.churchName === "string") {
-      //   event.churchId = JSON.parse(event.churchId);
-      // }
       if (typeof event.location === "string") {
         event.location = JSON.parse(event.location);
       }
-      // if (typeof event.eventType === "string") {
-      //   event.eventType = JSON.parse(event.eventType);
-      // }
       return event;
     });
 

@@ -191,17 +191,6 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
       editEventData.location = JSON.stringify(editEventData.location);
     }
 
-    // let editedEvent = {
-    //   churchId: editEventData.churchId,
-    //   eventTitle: editEventData.eventTitle,
-    //   date: editEventData.date,
-    //   location: editEventData.location,
-    //   eventType: editEventData.eventType,
-    //   description: editEventData.description,
-    //   imageUrl: editEventData.imageUrl,
-    //   eventId: editEventData.eventId
-    // }
-
     let matchingEvent = await Event.findByPk(eventId);
     if (!matchingEvent) {
         return res.status(401).send("Not the same church")
