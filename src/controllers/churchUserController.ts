@@ -122,7 +122,7 @@ export const modifyUser: RequestHandler = async (req, res, next) => {
     }
     else {
         res.status(400).send();
-
+    }};
 
 export const deleteUser: RequestHandler = async (req, res, next) => {
   let user = await verifyUser(req);
