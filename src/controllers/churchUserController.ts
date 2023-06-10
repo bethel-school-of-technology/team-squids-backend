@@ -44,7 +44,6 @@ export const signInUser: RequestHandler = async (req, res, next) => {
       validUser.password
     );
 
-    // const matchPass = req.body.password === validUser.password;
 
     if (matchPass) {
       // if pass matches, generate token

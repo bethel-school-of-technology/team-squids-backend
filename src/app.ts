@@ -27,12 +27,6 @@ app.use(( req: Request, res: Response, next: NextFunction ) => {
   res.status(404).send("This is not the URL you are looking for!");
 })
 
-// function helloWorld(req: Request, res: Response, next: NextFunction){
-//   res.send('Hello World')
-// }
-
-// app.use('/', helloWorld);
-
 
 // Syncing DB
 db.sync({ alter:false }).then(() => {

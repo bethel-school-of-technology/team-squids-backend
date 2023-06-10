@@ -14,15 +14,7 @@ export const signUserToken = async (user: ChurchUser) => {
   
   return token;
 }
-// export const signOutUserToken = async (user: ChurchUser) => {
-//     let token = jwt.sign(
-//         { userId: user.userId },
-//         secret,
-//         { expiresIn: '1hr' }
-//     );
-    
-//     return token;
-//   }
+
 export const verifyUser = async (req: Request) => {
   // Get the Authorization header from the request
   const authHeader = req.headers.authorization;
