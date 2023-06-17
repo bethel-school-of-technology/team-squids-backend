@@ -145,6 +145,7 @@ export const createEvent: RequestHandler = async (req, res, next) => {
     if (church.userId !== user.userId) {
       return res.status(401).send("Not authorized");
     }
+    
 
     if (typeof newEvent.location !== "string") {
       newEvent.location = JSON.stringify(newEvent.location);
@@ -198,7 +199,9 @@ export const updateEvent: RequestHandler = async (req, res, next) => {
       // Make sure the same user who created it is editing
       let churchId = req.body.churchId;
       if (!churchId || matchingEvent.churchId !== churchId) {
-        return res.status(401).send("Not the same user");
+        if (user.userType !== "admin") {
+          return res.status(401).send("Not the same user");
+        }
       }
     }
 
@@ -227,7 +230,7 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
   try {
     const user: ChurchUser | null = await verifyUser(req);
     if (!user) {
-      return res.status(403).send();
+      return res.status(401).send();
     }
 
     const eventId: number = parseInt(req.params.eventId);
@@ -239,7 +242,9 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
 
     const church: Church | null = await Church.findByPk(event.churchId);
     if (!church || church.userId !== user.userId) {
-      return res.status(401).send("Not authorized");
+      if (user.userType !== "admin") {
+        return res.status(401).send("Not the same user");
+      }
     }
 
     await Event.destroy({ where: { eventId: eventId } });
