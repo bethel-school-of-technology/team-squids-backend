@@ -57,8 +57,6 @@ export const signInUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const signOutUser: RequestHandler = async (req, res, next) => {};
-
 export const getUser: RequestHandler = async (req, res, next) => {
   // const currentDate = new Date().toISOString().slice(0, 10);
   let churchUser = req.params.id;
@@ -101,8 +99,10 @@ export const modifyUser: RequestHandler = async (req, res, next) => {
 
     //Is the user making the edit the same user editing themselves? if yes continue
     if (user.userId != userId) {
-        return res.status(403).send("Not the same user");
-    }
+        if (user.userType !== "admin") {
+          return res.status(403).send("Not the same user");
+        };
+    };
 
     let foundUser = await ChurchUser.findByPk(userId);
     if (!foundUser) {
@@ -135,8 +135,10 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
 
   //Is the user making the edit the same user editing themselves? if yes continue
   if (user.userId != userId) {
-    return res.status(403).send("Not the same user");
-  }
+    if (user.userType !== "admin") {
+      return res.status(403).send("Not the same user");
+    };
+  };
 
   if (findUser) {
     await ChurchUser.destroy({

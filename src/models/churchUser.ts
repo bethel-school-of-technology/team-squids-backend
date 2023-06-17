@@ -7,6 +7,7 @@ export class ChurchUser extends Model<InferAttributes<ChurchUser>, InferCreation
     declare password: string;
     declare firstName: string;
     declare lastName: string;
+    declare userType: string;
 }
 
 export function ChurchUserFactory(sequelize: Sequelize) {
@@ -37,6 +38,10 @@ export function ChurchUserFactory(sequelize: Sequelize) {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        userType: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
     },
         {
             freezeTableName: true,
