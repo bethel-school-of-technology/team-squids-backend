@@ -22,6 +22,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
     // hashPass will go here
     let hashedPassword = await hashPassword(newUser.password);
     newUser.password = hashedPassword;
+    newUser.userType = "user";
 
     let create = await ChurchUser.create(newUser);
     res.status(200).json({

@@ -111,14 +111,14 @@ export const getOneChurch: RequestHandler = async (req, res, next) => {
   }
 };
 export const getUserChurch: RequestHandler = async (req, res, next) => {
-    
+
   let userId = req.params.userId;
-  let church = await Church.findAll( {
+  let church = await Church.findAll({
     include: [
       {
         model: ChurchUser,
         required: true,
-        where: { userId:userId}
+        where: { userId: userId }
       }
     ],
   });
@@ -129,11 +129,11 @@ export const getUserChurch: RequestHandler = async (req, res, next) => {
     }
     return church;
   });
- 
- 
-  
+
+
+
   res.status(200).json(church);
-} 
+}
 
 export const editChurch: RequestHandler = async (req, res, next) => {
   try {
@@ -149,6 +149,7 @@ export const editChurch: RequestHandler = async (req, res, next) => {
     if (typeof editChurchData.location !== "string") {
       editChurchData.location = JSON.stringify(editChurchData.location);
     }
+    console.log(editChurchData.location)
 
     let matchingChurch = await Church.findByPk(churchId);
 
@@ -156,6 +157,7 @@ export const editChurch: RequestHandler = async (req, res, next) => {
     let userId = req.body.userId;
     let userFound = await ChurchUser.findByPk(userId);
     if (!userFound || userFound.userId !== user.userId) {
+      console.log(user.userType)
       if (user.userType !== "admin") {
         return res.status(403).send("Not the same user");
       }
@@ -172,47 +174,51 @@ export const editChurch: RequestHandler = async (req, res, next) => {
       matchingChurch.welcomeMessage &&
       matchingChurch.serviceTime &&
       matchingChurch.imageUrl &&
-      matchingChurch.website &&
-      matchingChurch.userId === editChurchData.userId
+      matchingChurch.website
     ) {
-      await Church.update(editChurchData, { where: { churchId: churchId } });
-      return res.status(200).send("Church edited");
-    } else {
-      return res.status(400).json();
-    }
-  } catch (error: any) {
-    res.status(500).send(error.message || "Some error occurred while editing the Church.");
-  }
-};
-
-export const deleteChurch: RequestHandler = async (req, res, next) => {
-  try {
-    let user: ChurchUser | null = await verifyUser(req);
-    if (!user) {
-      return res.status(403).send();
-    }
-
-    let churchId = req.params.id;
-    let churchFound = await Church.findByPk(churchId);
-
-    // Make sure same user who created it can delete
-    let userId = req.body.userId;
-    let userFound = await ChurchUser.findByPk(churchFound?.userId);
-    if (!userFound || userFound.dataValues.userId !== user.userId) {
-      if (user.userType !== "admin") {
-        return res.status(403).send("Not the same user");
+      if (matchingChurch.userId === editChurchData.userId) {
+        await Church.update(editChurchData, { where: { churchId: churchId } });
+        return res.status(200).send("Church edited");
+      } else if (user.userType === "admin") {
+        await Church.update(editChurchData, { where: { churchId: churchId } });
+        return res.status(200).send("Church edited");
+      } else {
+        return res.status(400).json();
       }
     }
-
-    if (churchFound) {
-      await Church.destroy({
-        where: { churchId: churchId },
-      });
-      res.status(200).json();
-    } else {
-      res.status(404).json();
+   } catch (error: any) {
+      res.status(500).send(error.message || "Some error occurred while editing the Church.");
     }
-  } catch (error: any) {
-    res.status(500).send(error.message || "Some error occurred while deleting the Church.");
-  }
-};
+  };
+
+  export const deleteChurch: RequestHandler = async (req, res, next) => {
+    try {
+      let user: ChurchUser | null = await verifyUser(req);
+      if (!user) {
+        return res.status(403).send();
+      }
+
+      let churchId = req.params.id;
+      let churchFound = await Church.findByPk(churchId);
+
+      // Make sure same user who created it can delete
+      let userId = req.body.userId;
+      let userFound = await ChurchUser.findByPk(churchFound?.userId);
+      if (!userFound || userFound.dataValues.userId !== user.userId) {
+        if (user.userType !== "admin") {
+          return res.status(403).send("Not the same user");
+        }
+      }
+
+      if (churchFound) {
+        await Church.destroy({
+          where: { churchId: churchId },
+        });
+        res.status(200).json();
+      } else {
+        res.status(404).json();
+      }
+    } catch (error: any) {
+      res.status(500).send(error.message || "Some error occurred while deleting the Church.");
+    }
+  };
