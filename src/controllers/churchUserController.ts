@@ -87,42 +87,43 @@ export const getUser: RequestHandler = async (req, res, next) => {
 
 export const modifyUser: RequestHandler = async (req, res, next) => {
 
-    let newUser = req.body;
-    let user = await verifyUser(req);
+  let newUser = req.body;
+  let user = await verifyUser(req);
 
-    //Does the user exist? if yes contiune
-    if (!user) {
-        return res.status(403).send();
-    }
+  //Does the user exist? if yes contiune
+  if (!user) {
+    return res.status(403).send();
+  }
 
-    let userId = parseInt(req.params.id);
-    newUser.userId = userId
+  let userId = parseInt(req.params.id);
+  newUser.userId = userId
 
-    //Is the user making the edit the same user editing themselves? if yes continue
-    if (user.userId != userId) {
-        if (user.userType !== "admin") {
-          return res.status(403).send("Not the same user");
-        };
+  //Is the user making the edit the same user editing themselves? if yes continue
+  if (user.userId != userId) {
+    if (user.userType !== "admin") {
+      return res.status(403).send("Not the same user");
     };
+  };
 
-    let foundUser = await ChurchUser.findByPk(userId);
-    if (!foundUser) {
-        return res.status(404).send();
-    }
+  let foundUser = await ChurchUser.findByPk(userId);
+  if (!foundUser) {
+    return res.status(404).send();
+  }
 
-    if ( newUser.password) {
-        newUser.password = await hashPassword(newUser.password)
-    } else {
-        newUser.password = foundUser.password;
-    }
+  if (newUser.password) {
+    newUser.password = await hashPassword(newUser.password)
+  } else {
+    newUser.password = foundUser.password;
+  }
 
-    if (foundUser.dataValues.userId === parseInt(newUser.userId)) {
-        await ChurchUser.update(newUser, { where: { userId } });
-        res.status(200).json();
-    }
-    else {
-        res.status(400).send();
-    }};
+  if (foundUser.dataValues.userId === parseInt(newUser.userId)) {
+    await ChurchUser.update(newUser, { where: { userId } });
+    res.status(200).json();
+  }
+  else {
+    res.status(400).send();
+  }
+};
 
 export const deleteUser: RequestHandler = async (req, res, next) => {
   let user = await verifyUser(req);
@@ -170,11 +171,11 @@ export const verifyCurrentUser: RequestHandler = async (req, res) => {
 };
 
 export const vrfyUser: RequestHandler = async (req, res, next) => {
-    let userId = parseInt(req.params.id)
-    let user = await verifyUser(req)
-    if (userId === user?.userId) {
-        res.status(200).send(true)
-    } else {
-        res.status(200).send(false)
-    }
+  let userId = parseInt(req.params.id)
+  let user = await verifyUser(req)
+  if (userId === user?.userId) {
+    res.status(200).send(true)
+  } else {
+    res.status(200).send(false)
+  }
 }

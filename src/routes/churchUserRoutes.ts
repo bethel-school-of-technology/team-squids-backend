@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { allUser, createUser, getUser,
 
- signInUser, modifyUser,deleteUser, verifyCurrentUser, vrfyUser } from '../controllers/churchUserController';
+ signInUser, modifyUser,deleteUser, verifyCurrentUser, vrfyUser, getAPIKey } from '../controllers/churchUserController';
 
 const router = Router();
 
@@ -10,6 +10,8 @@ router.get('/', allUser);
 router.get('/:id', getUser);
 
 router.get('/search/:query')
+
+router.get("/apikey", getAPIKey);
 
 router.post('/verify/:id', vrfyUser)
 
