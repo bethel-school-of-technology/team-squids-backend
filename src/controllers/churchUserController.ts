@@ -179,3 +179,16 @@ export const vrfyUser: RequestHandler = async (req, res, next) => {
     res.status(200).send(false)
   }
 }
+
+export const getAPIKey: RequestHandler = async (req, res, next) => {
+  const key: string = process.env.APIKEY ?? '';
+  try {
+    if (key === '') {
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.status(200).send(key);
+    }
+  } catch {
+    res.status(500).send("Internal Server Error");
+  }
+}
