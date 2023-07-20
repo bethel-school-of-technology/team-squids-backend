@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { Church } from "../models/church";
+import { Church, ChurchWithEvents } from "../models/church";
 import { Event } from "../models/event";
 import { Op } from "sequelize";
 import { ChurchUser } from "../models/churchUser";
@@ -68,6 +68,38 @@ export const getChurch: RequestHandler = async (req, res, next) => {
     res.status(500).send(error.message || "Some error occurred while retrieving churches.");
   }
 };
+
+export const getFavoriteChurches: RequestHandler = async (req, res, next) => {
+  try {
+    let churchFound: Church[] = await Church.findAll({
+      include: [
+        {
+          model: Event,
+        },
+      ],
+    });
+
+    // Parse location string for each church
+    churchFound = churchFound.map((church) => {
+      if (typeof church.location === "string") {
+        church.location = JSON.parse(church.location);
+      }
+      // Check and parse location string for each event in the church
+      church.Events = church.Events.map((event) => {
+        if (typeof event.location === "string") {
+          event.location = JSON.parse(event.location);
+        }
+        return event;
+      });
+      return church;
+    });
+
+    res.json(churchFound);
+  } catch (error: any) {
+    res.status(500).send(error.message || "Some error occurred while retrieving churches.");
+  }
+};
+
 
 export const getOneChurch: RequestHandler = async (req, res, next) => {
   try {

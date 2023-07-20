@@ -6,6 +6,7 @@ import {
   Sequelize,
 } from "sequelize";
 import { ChurchUser } from "./churchUser";
+import { Event } from "./event";
 
 export interface Location {
   street: string;
@@ -19,6 +20,25 @@ export class Church extends Model<
   InferCreationAttributes<Church>> {
   declare churchId: number;
   declare userId: number;
+  declare churchName: string;
+  declare denomination: string;
+  declare location: Location | string;
+  declare phoneNumber: string;
+  declare churchEmail: string;
+  declare welcomeMessage: string;
+  declare serviceTime: string;
+  declare imageUrl: string;
+  declare website: string;
+  declare createdAt?: Date;
+  declare updatedAt?: Date;
+}
+
+export class ChurchWithEvents extends Model<
+  InferAttributes<Church>,
+  InferCreationAttributes<Church>> {
+  declare churchId: number;
+  declare userId: number;
+  declare events: Event;
   declare churchName: string;
   declare denomination: string;
   declare location: Location | string;
