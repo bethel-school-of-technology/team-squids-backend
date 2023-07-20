@@ -4,11 +4,11 @@ import { searchChurch } from '../controllers/searchController';
 
 const router = Router();
 
+router.post('/favorites', getFavoriteChurches);
+
 router.get('/', getChurch);
 
 router.get('/userchurch/:userId', getUserChurch)
-
-router.get('/favorites', getFavoriteChurches);
 
 router.post('/', createChurch);
 

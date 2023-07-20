@@ -69,36 +69,51 @@ export const getChurch: RequestHandler = async (req, res, next) => {
   }
 };
 
+
 export const getFavoriteChurches: RequestHandler = async (req, res, next) => {
   try {
-    let churchFound: Church[] = await Church.findAll({
-      include: [
-        {
-          model: Event,
+    const { ids } = req.body; // Access the array of IDs using the property name from the request body
+
+    // Ensure that the array of IDs exists and is an array before proceeding
+    if (Array.isArray(ids) && ids.length > 0) {
+      // Fetch all churches that have events with churchId matching the IDs in the array
+      const churchFound: any = await Church.findAll({
+        where: {
+          churchId: ids, // This will filter churches based on their ID being in the ids array
         },
-      ],
-    });
-
-    // Parse location string for each church
-    churchFound = churchFound.map((church) => {
-      if (typeof church.location === "string") {
-        church.location = JSON.parse(church.location);
-      }
-      // Check and parse location string for each event in the church
-      church.Events = church.Events.map((event) => {
-        if (typeof event.location === "string") {
-          event.location = JSON.parse(event.location);
-        }
-        return event;
+        include: [
+          {
+            model: Event,
+          },
+        ],
       });
-      return church;
-    });
 
-    res.json(churchFound);
+      // Parse location string for each church
+      const churchesWithEvents = churchFound.map((church: { location: string; Events: any[]; }) => {
+        if (typeof church.location === "string") {
+          church.location = JSON.parse(church.location);
+        }
+
+        // Check and parse location string for each event in the church
+        church.Events = church.Events.map((event) => {
+          if (event.location && typeof event.location === "string") {
+            event.location = JSON.parse(event.location);
+          }
+          return event;
+        });
+        return church;
+      });
+
+      res.json(churchesWithEvents);
+    } else {
+      // Handle the case where the array of IDs is missing or empty
+      res.status(400).send("Invalid array of IDs in the request body.");
+    }
   } catch (error: any) {
     res.status(500).send(error.message || "Some error occurred while retrieving churches.");
   }
 };
+
 
 
 export const getOneChurch: RequestHandler = async (req, res, next) => {
